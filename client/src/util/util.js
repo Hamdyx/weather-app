@@ -20,3 +20,17 @@ exports.formatUnixDay = d => {
   let dateSp = dateStr.split(' ');
   return `${dateSp[0]}`;
 };
+
+exports.formatMtoKm = m => {
+  let km = m / 1000;
+  if (km % 10 === 0) {
+    return km;
+  } else return km.toFixed(2);
+};
+
+exports.formatSpeedMtoKm = ms => {
+  let kmh = (ms * 60 * 60) / 1000;
+  if (kmh % 10 === 0) {
+    return kmh;
+  } else return kmh.toFixed(2);
+};

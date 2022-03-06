@@ -3,7 +3,7 @@ import { VStack, HStack, Flex, Spacer, Heading } from '@chakra-ui/react';
 import WeatherSub from './WeatherSub';
 import HourlySlider from './HourlySlider';
 import DailyForecast from './DailyForecast';
-
+import { formatMtoKm, formatSpeedMtoKm } from '../util/util';
 const axios = require('axios');
 
 function WeatherMain() {
@@ -37,25 +37,25 @@ function WeatherMain() {
       '.curr-feelsLike'
     ).textContent = `Feels like ${Math.round(feels_like)}\u00b0`;
 
-    document.querySelector('.curr-wind').textContent = `Wind ${Math.round(
+    document.querySelector('.curr-wind').textContent = `Wind ${formatSpeedMtoKm(
       wind_speed
-    )}`;
+    )} km/h`;
 
     document.querySelector(
       '.curr-visibility'
-    ).textContent = `Visibility ${Math.round(visibility)}`;
+    ).textContent = `Visibility ${formatMtoKm(visibility)} km`;
 
     document.querySelector(
       '.curr-pressure'
-    ).textContent = `Pressure ${Math.round(pressure)}`;
+    ).textContent = `Pressure ${Math.round(pressure)} mb`;
 
     document.querySelector(
       '.curr-humidity'
-    ).textContent = `Humidity ${Math.round(humidity)}`;
+    ).textContent = `Humidity ${Math.round(humidity)}%`;
 
     document.querySelector(
       '.curr-dewpoint'
-    ).textContent = `Dew Point ${Math.round(dew_point)}`;
+    ).textContent = `Dew Point ${Math.round(dew_point)}\u00b0`;
   };
   fetchCurrentData();
   // update data every 5 minutes
