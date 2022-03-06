@@ -46,9 +46,6 @@ exports.fetchData = async (req, res) => {
 };
 
 exports.fetchWeather = async (req, res) => {
-  /* 
-    api.openweathermap.org/data/2.5/weather?
-        lat={lat}&lon={lon}&appid=7caaf4b2229b74317596e057fe1cd827 */
   const [lat, lon] = req.params.coord.split('-');
   console.log(lat);
   console.log(lon);
@@ -85,7 +82,6 @@ exports.fetchWeatherForecast = async (req, res) => {
 };
 
 const fetchWeatherData = async (lat, lon) => {
-  // const [lat, lon] = req.params.coord.split('-');
   console.log(lat);
   console.log(lon);
   console.log('fetchWeatherData');
@@ -97,24 +93,15 @@ const fetchWeatherData = async (lat, lon) => {
   updateCurrentData(data.current);
   updateHourlyData(data.hourly);
   updateDailyData(data.daily);
-  // weather.current = data.current;
-  // weather.hourly = data.hourly;
-  // weather.daily = data.daily;
+
   return weather;
 };
 
 fetchWeatherData('30.0443879', '31.2357257');
 
 exports.getCurrentData = async (req, res) => {
-  // const [lat, lon] = req.params.coord.split('-');
-  // console.log(lat);
-  // console.log(lon);
   console.log('getCurrentData');
-  // const endpoint = 'https://api.openweathermap.org/data/2.5/onecall?';
-  // const results = await axios.get(
-  //   `${endpoint}lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
-  // );
-  // const data = results.data;
+
   res.status(200).json({
     status: 'success',
     requestedAt: req.requestTime,
