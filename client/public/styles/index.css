@@ -1,0 +1,22 @@
+.main-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  flex: 1;
+}
+
+.main-content:nth-child(1) {
+  flex: 1;
+}
+
+.days-forecast {
+  padding: 2rem 0;
+  background: #294b60c4;
+}
+
+.hourly-icon {
+  margin: auto;
+}
+p.day-forecast {
+  margin-left: auto !important;
+}
