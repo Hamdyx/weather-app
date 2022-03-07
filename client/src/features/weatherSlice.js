@@ -51,6 +51,15 @@ export const fetchHourlyWeather = createAsyncThunk(
   }
 );
 
+export const fetchDailyWeather = createAsyncThunk(
+  'weather/fetchDailyWeather',
+  async () => {
+    const response = await axios.get(`${weatherApi}/daily`);
+
+    return response.data.data; // {0: {}, 1: {}}
+  }
+);
+
 export const weatherSlice = createSlice({
   name: 'weather',
   initialState,
@@ -76,6 +85,17 @@ export const weatherSlice = createSlice({
       state.hourly = { ...action.payload };
     },
     [fetchHourlyWeather.rejected]: (state, action) => {
+      state.status = 'failed';
+      state.error = action.error.message;
+    },
+    [fetchDailyWeather.pending]: (state, action) => {
+      state.status = 'loading';
+    },
+    [fetchDailyWeather.fulfilled]: (state, action) => {
+      state.status = 'succeeded';
+      state.daily = { ...action.payload };
+    },
+    [fetchDailyWeather.rejected]: (state, action) => {
       state.status = 'failed';
       state.error = action.error.message;
     },

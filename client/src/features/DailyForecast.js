@@ -1,63 +1,26 @@
-import ReactDOM from 'react-dom';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchDailyWeather } from './weatherSlice';
 import { HStack, Box, Grid, GridItem, Image } from '@chakra-ui/react';
 
 import { formatUnixDay } from '../util/util';
 
-const axios = require('axios');
-
 function DailyForecast() {
-  let daysData = '';
+  const dispatch = useDispatch();
+  const dailyItems = useSelector(state => state.weather.daily);
   let content = [];
 
-  const updateUIFields = data => {
-    if (Object.keys(data) === 0) {
-      console.log('DailyDrawer data is empty');
-      return;
-    }
+  useEffect(() => {
+    dispatch(fetchDailyWeather());
+  }, [dispatch]);
 
-    // console.log('DailyDrawer updateUIFields');
-    // console.log(new Date().toISOString());
-    // console.log(data);
+  for (const [k, v] of Object.entries(dailyItems)) {
+    content.push(v);
+  }
 
-    for (const [k, v] of Object.entries(data)) {
-      content.push(v);
-    }
-    // console.log(content);
-
-    content = content.map((item, i) => {
-      const {
-        dt,
-        temp, // {day, min, max, night, eve, morn}
-        weather, // [{id, main, description, icon}]
-      } = item;
-      // item = { dt, sunrise, sunset, moonrise, moonset, moon_phase, temp, feels_like
-      //          pressure, dew_point, wind_speed, wind_deg, weather, clouds, uvi }
-      // temp = {day, min, max, night, eve, morn}
-      // feels_like = {day, night, eve, morn}
-
-      const cloudIcon = `icons/${weather[0].icon}.png`;
-
-      return (
-        <DayItem
-          key={dt}
-          unixDate={dt}
-          weather={weather}
-          temp={temp}
-          icon={cloudIcon}
-        />
-      );
-    });
-
-    ReactDOM.render(content, document.querySelector('.days-forecast'));
-  };
-
-  const fetchDailyData = async () => {
-    const res = await axios.get('http://127.0.0.1:8000/api/v1/weather/daily/');
-    daysData = res.data.data;
-
-    updateUIFields(daysData);
-  };
-  fetchDailyData();
+  content = content.map((item, i) => {
+    return <DayItem key={i} item={item} />;
+  });
 
   return (
     <Box layerStyle="hourly" className="days-forecast" p={4}>
@@ -66,12 +29,20 @@ function DailyForecast() {
   );
 }
 
-const DayItem = ({ unixDate, weather, temp, icon }) => {
+const DayItem = ({ item }) => {
+  const {
+    dt,
+    weather, // [{id, main, description, icon}]
+    temp, // {day, min, max, night, eve, morn}
+  } = item;
+  // item = { dt, sunrise, sunset, moonrise, moonset, moon_phase, temp, feels_like
+  //          pressure, dew_point, wind_speed, wind_deg, weather, clouds, uvi }
+  const icon = `icons/${weather[0].icon}.png`;
   return (
     <Grid templateColumns="repeat(12, 1fr)" gap={6}>
       <GridItem w="100%" colSpan={3}>
         <p flex={1} align="left">
-          {formatUnixDay(unixDate)}
+          {formatUnixDay(dt)}
         </p>
       </GridItem>
 
