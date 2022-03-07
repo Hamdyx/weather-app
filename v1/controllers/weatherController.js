@@ -148,7 +148,7 @@ exports.fetchCoordinates = async (req, res) => {
   console.log('fetchCoordinates');
   const endpoint = 'http://api.openweathermap.org/geo/1.0/direct?';
   const results = await axios.get(
-    `${endpoint}q=${'cairo'}&limit=${5}&appid=${apiKey}`
+    `${endpoint}q=${name}&limit=${5}&appid=${apiKey}`
   );
   const data = results.data;
 

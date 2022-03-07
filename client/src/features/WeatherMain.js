@@ -39,8 +39,6 @@ function WeatherMain() {
 
 function WeatherHeader(props) {
   const currentWeather = useSelector(state => state.weather.current);
-  console.log('currentWeather');
-  console.log(currentWeather);
   const {
     temp,
     feels_like,
@@ -51,11 +49,6 @@ function WeatherHeader(props) {
     dew_point,
     weather,
   } = currentWeather;
-
-  console.log(weather);
-  if (weather) {
-    console.log(weather[0].icon);
-  }
 
   const cloudIcon = weather ? `icons/${weather[0].icon}.png` : `icons/11n.png`;
   return (

@@ -2,7 +2,6 @@ import {
   createSlice,
   createAsyncThunk,
   createEntityAdapter,
-  nanoid,
 } from '@reduxjs/toolkit';
 
 const axios = require('axios');
@@ -19,15 +18,6 @@ const initialState = weatherAdapter.getInitialState({
   status: 'idle',
   error: null,
 });
-
-export const fetchWeatherData = createAsyncThunk(
-  'weather/fetchAll',
-  async () => {
-    // const response = await axios.get(weatherApi)
-    // return response.data.data.weatherData
-    console.log('fetchWeatherData');
-  }
-);
 
 export const fetchCurrentWeather = createAsyncThunk(
   'weather/fetchCurrentWeather',
@@ -52,40 +42,20 @@ export const fetchCurrentWeather = createAsyncThunk(
     return response.data.data;
   }
 );
+export const fetchHourlyWeather = createAsyncThunk(
+  'weather/fetchHourlyWeather',
+  async () => {
+    const response = await axios.get(`${weatherApi}/hourly`);
+
+    return response.data.data; // {0: {}, 1: {}}
+  }
+);
 
 export const weatherSlice = createSlice({
   name: 'weather',
   initialState,
-  reducers: {
-    /* weatherAdded: {
-      reducer(state, action) {
-        state.weather.daily.push(action.payload);
-        // weatherAdapter.addOne
-      },
-      prepare(title, content) {
-        return {
-          payload: {
-            
-            date: new Date().toISOString(),
-            title,
-            content,
-          },
-        };
-      },
-    }, */
-  },
+  reducers: {},
   extraReducers: {
-    [fetchWeatherData.pending]: (state, action) => {
-      state.status = 'loading';
-    },
-    [fetchWeatherData.fulfilled]: (state, action) => {
-      state.status = 'succeeded';
-      weatherAdapter.upsertMany(state, action.payload);
-    },
-    [fetchWeatherData.rejected]: (state, action) => {
-      state.status = 'failed';
-      state.error = action.error.message;
-    },
     [fetchCurrentWeather.pending]: (state, action) => {
       state.status = 'loading';
     },
@@ -98,20 +68,18 @@ export const weatherSlice = createSlice({
       state.status = 'failed';
       state.error = action.error.message;
     },
+    [fetchHourlyWeather.pending]: (state, action) => {
+      state.status = 'loading';
+    },
+    [fetchHourlyWeather.fulfilled]: (state, action) => {
+      state.status = 'succeeded';
+      state.hourly = { ...action.payload };
+    },
+    [fetchHourlyWeather.rejected]: (state, action) => {
+      state.status = 'failed';
+      state.error = action.error.message;
+    },
   },
 });
 
-// console.log(weatherSlice);
-
-/* export const { weatherAdded } = weatherSlice.actions; */
-
 export default weatherSlice.reducer;
-
-/* export const { selectAll, selectById, selectIds } = weatherAdapter.getSelectors(
-  state => state.weather
-);
- */
-
-export const { selectCurrent } = weatherAdapter.getSelectors(
-  state => state.weather.current
-);
