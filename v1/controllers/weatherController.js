@@ -98,7 +98,7 @@ const fetchWeatherData = async (lat, lon) => {
 };
 
 fetchWeatherData('30.0443879', '31.2357257');
-
+// GET /current
 exports.getCurrentData = async (req, res) => {
   console.log('getCurrentData');
 

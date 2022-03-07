@@ -15,14 +15,14 @@ function DailyForecast() {
       return;
     }
 
-    console.log('DailyDrawer updateUIFields');
-    console.log(new Date().toISOString());
-    console.log(data);
+    // console.log('DailyDrawer updateUIFields');
+    // console.log(new Date().toISOString());
+    // console.log(data);
 
     for (const [k, v] of Object.entries(data)) {
       content.push(v);
     }
-    console.log(content);
+    // console.log(content);
 
     content = content.map((item, i) => {
       const {

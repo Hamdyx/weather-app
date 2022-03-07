@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Center,
@@ -7,74 +8,20 @@ import {
   Spacer,
   Heading,
 } from '@chakra-ui/react';
-import { displayWeather } from './weatherSlice';
+import { fetchCurrentWeather } from './weatherSlice';
 import HourlySlider from './HourlySlider';
 import DailyForecast from './DailyForecast';
 import { formatMtoKm, formatSpeedMtoKm } from '../util/util';
 import WeatherSub from './WeatherSub';
 
-const axios = require('axios');
-
 function WeatherMain() {
   const dispatch = useDispatch();
-  const stateTest = useSelector(state => state.weather.value);
-  const fetchCurrentData = async () => {
-    const res = await axios.get(
-      'http://127.0.0.1:8000/api/v1/weather/current/'
-    );
 
-    const current = res.data.data;
+  useEffect(() => {
+    // fetch current weather data into state.weather.current
+    dispatch(fetchCurrentWeather());
+  }, [dispatch]);
 
-    updateCurrentUI(current);
-  };
-
-  // dispatch(displayWeather());
-  const updateCurrentUI = info => {
-    if (Object.keys(info).length === 0) return;
-    const {
-      temp,
-      feels_like,
-      wind_speed,
-      visibility,
-      pressure,
-      humidity,
-      dew_point,
-      weather,
-    } = info;
-
-    document.querySelector('.curr-temp').textContent = `${Math.round(
-      temp
-    )}\u00b0`;
-
-    document.querySelector(
-      '.curr-feelsLike'
-    ).textContent = `Feels like ${Math.round(feels_like)}\u00b0`;
-
-    document.querySelector('.curr-wind').textContent = `Wind ${formatSpeedMtoKm(
-      wind_speed
-    )} km/h`;
-
-    document.querySelector(
-      '.curr-visibility'
-    ).textContent = `Visibility ${formatMtoKm(visibility)} km`;
-
-    document.querySelector(
-      '.curr-pressure'
-    ).textContent = `Pressure ${Math.round(pressure)} mb`;
-
-    document.querySelector(
-      '.curr-humidity'
-    ).textContent = `Humidity ${Math.round(humidity)}%`;
-
-    document.querySelector(
-      '.curr-dewpoint'
-    ).textContent = `Dew Point ${Math.round(dew_point)}\u00b0`;
-
-    const cloudIcon = `icons/${weather[0].icon}.png`;
-    console.log(document.querySelector('.curr-icon'));
-    document.querySelector('.curr-icon').src = `${cloudIcon}`;
-  };
-  fetchCurrentData();
   // update data every 5 minutes
   // setInterval(fetchData, 1000);
   return (
@@ -91,7 +38,26 @@ function WeatherMain() {
 }
 
 function WeatherHeader(props) {
-  const cloudIcon = `icons/11n.png`;
+  const currentWeather = useSelector(state => state.weather.current);
+  console.log('currentWeather');
+  console.log(currentWeather);
+  const {
+    temp,
+    feels_like,
+    wind_speed,
+    visibility,
+    pressure,
+    humidity,
+    dew_point,
+    weather,
+  } = currentWeather;
+
+  console.log(weather);
+  if (weather) {
+    console.log(weather[0].icon);
+  }
+
+  const cloudIcon = weather ? `icons/${weather[0].icon}.png` : `icons/11n.png`;
   return (
     <Center p={4}>
       <VStack spacing="1rem">
@@ -107,32 +73,32 @@ function WeatherHeader(props) {
             className="curr-icon"
           />
           <Heading as="h2" size="4xl" align="center" className="curr-temp">
-            {props.temp}
+            {`${Math.round(temp)}\u00b0`}
           </Heading>
         </HStack>
         <Spacer />
 
         <HStack spacing={['1rem', '2rem']}>
           <Heading as="h3" size="xs" align="left" className="curr-feelsLike">
-            Feels like {props.feelsLike}
+            Feels like {`${Math.round(feels_like)}\u00b0`}
           </Heading>
           <Heading as="h3" size="xs" align="left" className="curr-wind">
-            Wind {props.feelsLike}
+            Wind {`${formatSpeedMtoKm(wind_speed)} km/h`}
           </Heading>
           <Heading as="h3" size="xs" align="left" className="curr-visibility">
-            Visibility {props.feelsLike}
+            Visibility {`${formatMtoKm(visibility)} km`}
           </Heading>
         </HStack>
         <Spacer />
         <HStack spacing={['.75rem', '2rem']}>
           <Heading as="h3" size="xs" align="left" className="curr-pressure">
-            Pressure {props.feelsLike}
+            Pressure {`${Math.round(pressure)} mb`}
           </Heading>
           <Heading as="h3" size="xs" align="left" className="curr-humidity">
-            Humidity {props.feelsLike}
+            Humidity {`${Math.round(humidity)}%`}
           </Heading>
           <Heading as="h3" size="xs" align="left" className="curr-dewpoint">
-            Dew Point {props.feelsLike}
+            Dew Point {`${Math.round(dew_point)}\u00b0`}
           </Heading>
         </HStack>
       </VStack>
