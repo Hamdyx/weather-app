@@ -107,7 +107,7 @@ function WeatherHeader(props) {
         </HStack>
         <Spacer />
 
-        <HStack spacing="2rem">
+        <HStack spacing={['1rem', '2rem']}>
           <Heading as="h3" size="xs" align="left" className="curr-feelsLike">
             Feels like {props.feelsLike}
           </Heading>
@@ -119,7 +119,7 @@ function WeatherHeader(props) {
           </Heading>
         </HStack>
         <Spacer />
-        <HStack spacing="2rem">
+        <HStack spacing={['.75rem', '2rem']}>
           <Heading as="h3" size="xs" align="left" className="curr-pressure">
             Pressure {props.feelsLike}
           </Heading>
