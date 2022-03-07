@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import {
   VStack,
   HStack,
@@ -17,40 +18,56 @@ import { formatUnixTime } from '../util/util';
 const axios = require('axios');
 function WeatherSub() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const todayData = useSelector(state => state.weather.daily[0]);
+  let content;
 
-  const fetchDailyData = async () => {
-    const res = await axios.get('http://127.0.0.1:8000/api/v1/weather/daily/');
-    const todayData = res.data.data[0];
+  if (todayData) {
+    const { sunrise, sunset, moonrise, moonset, uvi, moon_phase } = todayData;
+    content = (
+      <DrawerBody>
+        <HStack>
+          <DataStack
+            className="sunrise-data"
+            title={'Sunrise'}
+            value={formatUnixTime(sunrise)}
+          />
+          <Spacer />
 
-    updateUIFields(todayData);
-  };
-  fetchDailyData();
+          <DataStack
+            className="sunset-data"
+            title={'Sunset'}
+            value={formatUnixTime(sunset)}
+          />
+        </HStack>
 
-  const updateUIFields = info => {
-    if (Object.keys(info) === 0) return;
-    const { sunrise, sunset, moonrise, moonset, uvi, moon_phase } = info; // { sunrise, sunset, moonrise, moonset, pressure, uvi,
-    // wind_speed, moon_phase, dew_point }
+        <HStack mt={2}>
+          <DataStack
+            className="moonrise-data"
+            title={'Moonrise'}
+            value={formatUnixTime(moonrise)}
+          />
+          <Spacer />
+          <DataStack
+            className="moonset-data"
+            title={'Moonset'}
+            value={formatUnixTime(moonset)}
+          />
+        </HStack>
 
-    if (isOpen) {
-      document.querySelector('.sunrise-data').textContent = `${formatUnixTime(
-        sunrise
-      )}`;
-      document.querySelector('.sunset-data').textContent = `${formatUnixTime(
-        sunset
-      )}`;
-
-      document.querySelector('.moonrise-data').textContent = `${formatUnixTime(
-        moonrise
-      )}`;
-      document.querySelector('.moonset-data').textContent = `${formatUnixTime(
-        moonset
-      )}`;
-
-      document.querySelector('.moonphase-data').textContent = `${moon_phase}`;
-
-      document.querySelector('.uv-data').textContent = `${uvi}`;
-    }
-  };
+        <HStack mt={2}>
+          <DataStack
+            className="moonphase-data"
+            title={'Moon Phase'}
+            value={moon_phase}
+          />
+          <Spacer />
+          <DataStack className="uv-data" title={'UV Index'} value={uvi} />
+        </HStack>
+      </DrawerBody>
+    );
+  } else {
+    content = <DrawerBody>Loading</DrawerBody>;
+  }
 
   return (
     <>
@@ -61,46 +78,7 @@ function WeatherSub() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerHeader borderBottomWidth="1px">Day Details</DrawerHeader>
-          <DrawerBody>
-            <HStack>
-              <DataStack
-                className="sunrise-data"
-                title={'Sunrise'}
-                value={1646022157}
-              />
-              <Spacer />
-
-              <DataStack
-                className="sunset-data"
-                title={'Sunset'}
-                value={1646063581}
-              />
-            </HStack>
-
-            <HStack mt={2}>
-              <DataStack
-                className="moonrise-data"
-                title={'Moonrise'}
-                value={1646017020}
-              />
-              <Spacer />
-              <DataStack
-                className="moonset-data"
-                title={'Moonset'}
-                value={1646054880}
-              />
-            </HStack>
-
-            <HStack mt={2}>
-              <DataStack
-                className="moonphase-data"
-                title={'Moon Phase'}
-                value={0.53}
-              />
-              <Spacer />
-              <DataStack className="uv-data" title={'UV Index'} value={2.13} />
-            </HStack>
-          </DrawerBody>
+          {content}
         </DrawerContent>
       </Drawer>
     </>
