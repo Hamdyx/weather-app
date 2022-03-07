@@ -1,9 +1,16 @@
-import { VStack, HStack, Flex, Spacer, Heading } from '@chakra-ui/react';
-
-import WeatherSub from './WeatherSub';
+import {
+  Center,
+  VStack,
+  HStack,
+  Flex,
+  Spacer,
+  Heading,
+} from '@chakra-ui/react';
 import HourlySlider from './HourlySlider';
 import DailyForecast from './DailyForecast';
 import { formatMtoKm, formatSpeedMtoKm } from '../util/util';
+import WeatherSub from './WeatherSub';
+
 const axios = require('axios');
 
 function WeatherMain() {
@@ -27,6 +34,7 @@ function WeatherMain() {
       pressure,
       humidity,
       dew_point,
+      weather,
     } = info;
 
     document.querySelector('.curr-temp').textContent = `${Math.round(
@@ -56,54 +64,74 @@ function WeatherMain() {
     document.querySelector(
       '.curr-dewpoint'
     ).textContent = `Dew Point ${Math.round(dew_point)}\u00b0`;
+
+    const cloudIcon = `icons/${weather[0].icon}.png`;
+    console.log(document.querySelector('.curr-icon'));
+    document.querySelector('.curr-icon').src = `${cloudIcon}`;
   };
   fetchCurrentData();
   // update data every 5 minutes
   // setInterval(fetchData, 1000);
   return (
-    <Flex direction="column" flex={1} p={0}>
+    <Flex direction="column" flex={1}>
       <WeatherHeader location="Cairo, EG" data={{ temp: 10, feelsLike: 10 }} />
+      <Spacer />
       <HourlySlider />
       <Spacer />
       <DailyForecast />
-
+      <Spacer />
       <WeatherSub />
     </Flex>
   );
 }
 
 function WeatherHeader(props) {
+  const cloudIcon = `icons/11n.png`;
   return (
-    <VStack spacing={8} align="left" p={4}>
-      <Heading as="h1" size="lg" align="left">
-        {props.location}
-      </Heading>
-      <Heading as="h2" size="4xl" align="left" className="curr-temp">
-        {props.temp}
-      </Heading>
-      <HStack>
-        <Heading as="h3" size="sm" align="left" className="curr-feelsLike">
-          Feels like {props.feelsLike}
+    <Center p={4}>
+      <VStack spacing="1rem">
+        <Heading as="h1" size="lg">
+          {props.location}
         </Heading>
-        <Heading as="h3" size="sm" align="left" className="curr-wind">
-          Wind {props.feelsLike}
-        </Heading>
-        <Heading as="h3" size="sm" align="left" className="curr-visibility">
-          Visibility {props.feelsLike}
-        </Heading>
-      </HStack>
-      <HStack>
-        <Heading as="h3" size="sm" align="left" className="curr-pressure">
-          Pressure {props.feelsLike}
-        </Heading>
-        <Heading as="h3" size="sm" align="left" className="curr-humidity">
-          Humidity {props.feelsLike}
-        </Heading>
-        <Heading as="h3" size="sm" align="left" className="curr-dewpoint">
-          Dew Point {props.feelsLike}
-        </Heading>
-      </HStack>
-    </VStack>
+        <HStack>
+          <img
+            src={cloudIcon}
+            alt={`${'icon'}`}
+            width={65}
+            height={65}
+            className="curr-icon"
+          />
+          <Heading as="h2" size="4xl" align="center" className="curr-temp">
+            {props.temp}
+          </Heading>
+        </HStack>
+        <Spacer />
+
+        <HStack spacing="2rem">
+          <Heading as="h3" size="xs" align="left" className="curr-feelsLike">
+            Feels like {props.feelsLike}
+          </Heading>
+          <Heading as="h3" size="xs" align="left" className="curr-wind">
+            Wind {props.feelsLike}
+          </Heading>
+          <Heading as="h3" size="xs" align="left" className="curr-visibility">
+            Visibility {props.feelsLike}
+          </Heading>
+        </HStack>
+        <Spacer />
+        <HStack spacing="2rem">
+          <Heading as="h3" size="xs" align="left" className="curr-pressure">
+            Pressure {props.feelsLike}
+          </Heading>
+          <Heading as="h3" size="xs" align="left" className="curr-humidity">
+            Humidity {props.feelsLike}
+          </Heading>
+          <Heading as="h3" size="xs" align="left" className="curr-dewpoint">
+            Dew Point {props.feelsLike}
+          </Heading>
+        </HStack>
+      </VStack>
+    </Center>
   );
 }
 export default WeatherMain;
