@@ -1,3 +1,4 @@
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Center,
   VStack,
@@ -6,6 +7,7 @@ import {
   Spacer,
   Heading,
 } from '@chakra-ui/react';
+import { displayWeather } from './weatherSlice';
 import HourlySlider from './HourlySlider';
 import DailyForecast from './DailyForecast';
 import { formatMtoKm, formatSpeedMtoKm } from '../util/util';
@@ -14,6 +16,8 @@ import WeatherSub from './WeatherSub';
 const axios = require('axios');
 
 function WeatherMain() {
+  const dispatch = useDispatch();
+  const stateTest = useSelector(state => state.weather.value);
   const fetchCurrentData = async () => {
     const res = await axios.get(
       'http://127.0.0.1:8000/api/v1/weather/current/'
@@ -24,6 +28,7 @@ function WeatherMain() {
     updateCurrentUI(current);
   };
 
+  // dispatch(displayWeather());
   const updateCurrentUI = info => {
     if (Object.keys(info).length === 0) return;
     const {
