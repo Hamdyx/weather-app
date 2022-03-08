@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const weatherRouter = require('./v1/routes/weatherRouter');
+const locationRouter = require('./v1/routes/locationRouter');
 
 const app = express();
 
@@ -25,5 +26,6 @@ app.use((req, res, next) => {
 
 // Mounting Routers
 app.use('/api/v1/weather', weatherRouter);
+app.use('/api/v1/locations', locationRouter);
 
 module.exports = app;
