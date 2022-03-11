@@ -1,10 +1,9 @@
-import React, { StrictMode, useState } from 'react';
+import React, { StrictMode } from 'react';
+import ReactDOM from 'react-dom';
 
 import {
   FormControl,
   FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   VStack,
   HStack,
   Input,
@@ -12,17 +11,41 @@ import {
   Heading,
 } from '@chakra-ui/react';
 
+const axios = require('axios');
+
 function Locations() {
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [lat, setLat] = useState('');
-  const [long, setLong] = useState('');
+  const searchCity = async value => {
+    const res = await axios.get(
+      `http://127.0.0.1:8000/api/v1/locations/search/${value}`
+    );
+    console.table(res.data.filteredLocations);
+    if (res.data.filteredLocations) {
+      const citiesList = res.data.filteredLocations.map((city, i) => {
+        return <LocationItem key={i} city={city} />;
+      });
+
+      console.log(citiesList);
+
+      ReactDOM.render(citiesList, document.querySelector('#location-list'));
+    } else {
+      ReactDOM.render('', document.querySelector('#location-list'));
+    }
+  };
 
   const onLocationChange = e => {
     e.preventDefault();
-    console.log(e.currentTarget);
-    console.log(e.currentTarget.value);
-    console.log(e.currentTarget.id);
+    let value = e.currentTarget.value;
+
+    switch (e.currentTarget.id) {
+      case 'city':
+        searchCity(value);
+        break;
+      case 'state':
+        console.log('searchState()');
+        break;
+      default:
+        console.log('invalid search');
+    }
   };
 
   return (
@@ -56,6 +79,7 @@ function Locations() {
               changeFn={onLocationChange}
             />
           </HStack>
+          <ul id="location-list"></ul>
         </VStack>
       </Center>
     </StrictMode>
@@ -69,6 +93,12 @@ const LocationInput = ({ label, type, changeFn }) => {
       <Input id={label} type={type} onChange={changeFn} />
     </FormControl>
   );
+};
+
+const LocationItem = ({ city }) => {
+  const { name, lat, lon, country, state, id } = city;
+
+  return <li>{`${name}, ${country} - ${state}`}</li>;
 };
 
 export default Locations;
