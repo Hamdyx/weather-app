@@ -1,5 +1,7 @@
 import Head from 'next/head';
-import React, { StrictMode } from 'react';
+import React from 'react';
+
+import LocationsMain from '../features/locations/LocationsMain';
 
 function LocationsHead() {
   return (
@@ -18,8 +20,7 @@ function Locations() {
   return (
     <main>
       <LocationsHead />
-
-      <StrictMode>Locations Page</StrictMode>
+      <LocationsMain />
     </main>
   );
 }
