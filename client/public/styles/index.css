@@ -9,6 +9,16 @@
   flex: 1;
 }
 
+.main-content main {
+  display: flex;
+  flex: 1;
+}
+
+main #root {
+  display: flex;
+  flex: 1;
+}
+
 .days-forecast {
   padding: 2rem 0;
   background: #294b60c4;
