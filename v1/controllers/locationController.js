@@ -13,7 +13,7 @@ const apiKey = process.env.API_KEY;
             2. create util functions to format text data
             3. figure out better data structure
  */
-
+// ############# GET api/v1/locations
 exports.fetchLocations = async (req, res) => {
   console.log('fetchLocations');
   res.status(200).json({
@@ -24,7 +24,7 @@ exports.fetchLocations = async (req, res) => {
   });
 };
 
-// GET /search/str
+// ############# GET api/v1/locations/search/str
 exports.getFilteredLocations = async (req, res) => {
   const { str } = req.params;
   const re = new RegExp(`^(${str})[a-z0-9_-]*$`, 'i');
@@ -40,16 +40,12 @@ exports.getFilteredLocations = async (req, res) => {
   });
 };
 
-// ############# GET /location
-exports.fetchCoordinates = async (req, res) => {
+// ############# GET api/v1/locations/:name
+// fetch locations from openweather api
+// save data to json file
+exports.fetchCoordinatesByName = async (req, res) => {
   const { name } = req.params;
-  console.log(`name: ${name}`);
-  console.log('fetchCoordinates');
-  const endpoint = 'http://api.openweathermap.org/geo/1.0/direct?';
-  const results = await axios.get(
-    `${endpoint}q=${name}&limit=${5}&appid=${apiKey}`
-  );
-  const data = results.data;
+  const data = await handleDataFetch(name);
 
   res.status(200).json({
     status: 'success',
@@ -59,17 +55,13 @@ exports.fetchCoordinates = async (req, res) => {
   });
 };
 
-// ############# GET /location/coordinates/:name
-// fetch locations from openweather api
-// save data to json file
-exports.fetchCoordinatesByName = async (req, res) => {
-  const { name } = req.params;
+async function handleDataFetch(name) {
   const endpoint = 'http://api.openweathermap.org/geo/1.0/direct?';
   const results = await axios.get(
     `${endpoint}q=${name}&limit=${10}&appid=${apiKey}`
   );
   let data = results.data;
-  // set new id from lat-lon
+
   data = data.map(el => {
     const { lat, lon } = el;
     return { ...el, id: `${lat}-${lon}` };
@@ -84,13 +76,6 @@ exports.fetchCoordinatesByName = async (req, res) => {
     }
   });
 
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    results: data.length,
-    data,
-  });
-
   console.table(data);
   fs.writeFile(
     `${__dirname}/../dev-data/locations.json`,
@@ -102,4 +87,5 @@ exports.fetchCoordinatesByName = async (req, res) => {
       }
     }
   );
-};
+  return data;
+}
