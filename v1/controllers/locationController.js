@@ -27,10 +27,10 @@ exports.fetchLocations = async (req, res) => {
 // GET /search/str
 exports.getFilteredLocations = async (req, res) => {
   const { str } = req.params;
+  const re = new RegExp(`^(${str})[a-z0-9_-]*$`, 'i');
   const filteredLocations = locations.filter(l => {
-    let test = l.name.toLowerCase();
-    // @dev: includes returns list with words that have the search input ignoring letters order
-    return test.includes(str);
+    let city = l.name;
+    return city.match(re) ? true : false;
   });
   res.status(200).json({
     status: 'success',
