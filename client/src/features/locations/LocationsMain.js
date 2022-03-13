@@ -9,6 +9,7 @@ import {
   Input,
   Center,
   Heading,
+  Box,
 } from '@chakra-ui/react';
 
 const axios = require('axios');
@@ -50,9 +51,19 @@ function Locations() {
 
   return (
     <StrictMode>
+      <Box w="100%" p={4}>
+        <HStack>
+          <Heading as="h3" size="md">
+            Managed cities
+          </Heading>
+        </HStack>
+        <VStack mt={4} spacing={4}>
+          <ManagedCity cityId={1} />
+          <ManagedCity cityId={2} />
+        </VStack>
+      </Box>
       <Center p={4}>
         <VStack>
-          <Heading>Locations Page</Heading>
           <HStack pt={8}>
             <LocationInput
               label="city"
@@ -92,6 +103,14 @@ const LocationInput = ({ label, type, changeFn }) => {
       <FormLabel htmlFor={label}>{label}</FormLabel>
       <Input id={label} type={type} onChange={changeFn} />
     </FormControl>
+  );
+};
+
+const ManagedCity = ({ cityId }) => {
+  return (
+    <Box bg="gray" w="100%" p={4} color="white">
+      Managed city {cityId}
+    </Box>
   );
 };
 
