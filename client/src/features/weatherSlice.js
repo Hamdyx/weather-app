@@ -12,6 +12,7 @@ const weatherAdapter = createEntityAdapter({
 });
 
 const initialState = weatherAdapter.getInitialState({
+  activeLocation: '',
   current: {},
   hourly: [],
   daily: [],
@@ -63,8 +64,15 @@ export const fetchDailyWeather = createAsyncThunk(
 export const weatherSlice = createSlice({
   name: 'weather',
   initialState,
-  reducers: {},
+  reducers: {
+    locationUpdated: {
+      reducer(state, action) {
+        state.activeLocation = action.payload;
+      },
+    },
+  },
   extraReducers: {
+    // Current weather
     [fetchCurrentWeather.pending]: (state, action) => {
       state.status = 'loading';
     },
@@ -77,6 +85,7 @@ export const weatherSlice = createSlice({
       state.status = 'failed';
       state.error = action.error.message;
     },
+    // Hourly weather
     [fetchHourlyWeather.pending]: (state, action) => {
       state.status = 'loading';
     },
@@ -88,6 +97,7 @@ export const weatherSlice = createSlice({
       state.status = 'failed';
       state.error = action.error.message;
     },
+    // Daily weather
     [fetchDailyWeather.pending]: (state, action) => {
       state.status = 'loading';
     },
@@ -101,5 +111,7 @@ export const weatherSlice = createSlice({
     },
   },
 });
+
+export const { locationUpdated } = weatherSlice.actions;
 
 export default weatherSlice.reducer;

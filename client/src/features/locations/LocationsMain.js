@@ -1,5 +1,7 @@
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
+import { useDispatch } from 'react-redux';
+import { locationUpdated } from '../weatherSlice.js';
 
 import {
   FormControl,
@@ -15,6 +17,11 @@ import {
 const axios = require('axios');
 
 function Locations() {
+  const dispatch = useDispatch();
+
+  const handleLocationUpdate = loc => {
+    dispatch(locationUpdated(loc));
+  };
   const searchCity = async value => {
     if (value === '') {
       ReactDOM.render('', document.querySelector('#location-list'));
@@ -23,13 +30,15 @@ function Locations() {
     const res = await axios.get(
       `http://127.0.0.1:8000/api/v1/locations/search/${value}`
     );
-    console.table(res.data.filteredLocations);
+    // console.table(res.data.filteredLocations);
     if (res.data.filteredLocations) {
       const citiesList = res.data.filteredLocations.map((city, i) => {
-        return <LocationItem key={i} city={city} />;
+        return (
+          <LocationItem key={i} city={city} updateFn={handleLocationUpdate} />
+        );
       });
 
-      console.log(citiesList);
+      // console.log(citiesList);
 
       ReactDOM.render(citiesList, document.querySelector('#location-list'));
     } else {
@@ -118,10 +127,15 @@ const ManagedCity = ({ cityId }) => {
   );
 };
 
-const LocationItem = ({ city }) => {
+function LocationItem({ city, updateFn }) {
   const { name, lat, lon, country, state, id } = city;
+  const handleClick = ev => {
+    console.log(`clicked location: ${name}, ${country}`);
+    console.log(ev.target);
+    updateFn(name);
+  };
 
-  return <li>{`${name}, ${country} - ${state}`}</li>;
-};
+  return <li onClick={handleClick}>{`${name}, ${country} - ${state}`}</li>;
+}
 
 export default Locations;
