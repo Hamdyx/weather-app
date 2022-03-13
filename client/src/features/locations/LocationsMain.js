@@ -16,6 +16,10 @@ const axios = require('axios');
 
 function Locations() {
   const searchCity = async value => {
+    if (value === '') {
+      ReactDOM.render('', document.querySelector('#location-list'));
+      return;
+    }
     const res = await axios.get(
       `http://127.0.0.1:8000/api/v1/locations/search/${value}`
     );
