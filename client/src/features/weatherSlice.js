@@ -65,6 +65,11 @@ export const weatherSlice = createSlice({
   name: 'weather',
   initialState,
   reducers: {
+    locationAdded: {
+      reducer(state, action) {
+        weatherAdapter.addOne(state, action.payload);
+      },
+    },
     locationUpdated: {
       reducer(state, action) {
         state.activeLocation = action.payload;
@@ -112,6 +117,14 @@ export const weatherSlice = createSlice({
   },
 });
 
-export const { locationUpdated } = weatherSlice.actions;
+export const { locationAdded, locationUpdated } = weatherSlice.actions;
 
 export default weatherSlice.reducer;
+
+// Export the customized selectors for this adapter using `getSelectors`
+export const {
+  selectAll: selectAllLocation,
+  selectById: selectLocationById,
+  selectIds: selectLocationsIds,
+  // Pass in a selector that returns the posts slice of state
+} = weatherAdapter.getSelectors(state => state.weather);
