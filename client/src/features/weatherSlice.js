@@ -43,6 +43,16 @@ export const fetchCurrentWeather = createAsyncThunk(
     return response.data.data;
   }
 );
+
+export const fetchActiveWeather = createAsyncThunk(
+  'weather/fetchActiveWeather',
+  async coord => {
+    const response = await axios.get(`${weatherApi}/oneCall/${coord}`);
+    console.log(response);
+    return response.data.data;
+  }
+);
+
 export const fetchHourlyWeather = createAsyncThunk(
   'weather/fetchHourlyWeather',
   async () => {
@@ -77,13 +87,28 @@ export const weatherSlice = createSlice({
     },
   },
   extraReducers: {
+    // Active location weather
+    [fetchActiveWeather.pending]: (state, action) => {
+      state.status = 'loading';
+    },
+    [fetchActiveWeather.fulfilled]: (state, action) => {
+      state.status = 'succeeded';
+      // console.log('fetchActiveWeather');
+      // console.log(action.payload);
+      state.current = { ...action.payload };
+    },
+    [fetchActiveWeather.rejected]: (state, action) => {
+      state.status = 'failed';
+      state.error = action.error.message;
+    },
     // Current weather
     [fetchCurrentWeather.pending]: (state, action) => {
       state.status = 'loading';
     },
     [fetchCurrentWeather.fulfilled]: (state, action) => {
       state.status = 'succeeded';
-
+      // console.log('fetchCUrrentWeather');
+      // console.log(action.payload);
       state.current = { ...action.payload };
     },
     [fetchCurrentWeather.rejected]: (state, action) => {
@@ -96,6 +121,8 @@ export const weatherSlice = createSlice({
     },
     [fetchHourlyWeather.fulfilled]: (state, action) => {
       state.status = 'succeeded';
+      // console.log('fetchHourlyWeather');
+      // console.log(action.payload);
       state.hourly = { ...action.payload };
     },
     [fetchHourlyWeather.rejected]: (state, action) => {
@@ -108,6 +135,8 @@ export const weatherSlice = createSlice({
     },
     [fetchDailyWeather.fulfilled]: (state, action) => {
       state.status = 'succeeded';
+      // console.log('featchDailyWeather');
+      // console.log(action.payload);
       state.daily = { ...action.payload };
     },
     [fetchDailyWeather.rejected]: (state, action) => {

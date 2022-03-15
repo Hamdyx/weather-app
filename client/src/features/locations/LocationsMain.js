@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   locationAdded,
   locationUpdated,
+  fetchActiveWeather,
   selectLocationById,
   selectLocationsIds,
 } from '../weatherSlice.js';
@@ -31,6 +32,7 @@ function Locations() {
   };
   const handleLocationUpdate = loc => {
     dispatch(locationUpdated(loc));
+    dispatch(fetchActiveWeather(loc));
   };
 
   let locationContent = locationIds.map(el => (

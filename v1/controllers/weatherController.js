@@ -62,17 +62,14 @@ exports.fetchWeather = async (req, res) => {
     data: data,
   });
 };
-
+// ############# GET /oneCall/:coord
 exports.fetchWeatherForecast = async (req, res) => {
   const [lat, lon] = req.params.coord.split('-');
   console.log(lat);
   console.log(lon);
   console.log('fetchWeatherForecast');
-  const endpoint = 'https://api.openweathermap.org/data/2.5/onecall?';
-  const results = await axios.get(
-    `${endpoint}lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
-  );
-  const data = results.data;
+  const data = await fetchWeatherData(lat, lon);
+
   res.status(200).json({
     status: 'success',
     requestedAt: req.requestTime,
