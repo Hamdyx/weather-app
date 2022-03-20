@@ -12,6 +12,7 @@ const weatherAdapter = createEntityAdapter({
 });
 
 const initialState = weatherAdapter.getInitialState({
+  activeLocation: '',
   current: {},
   hourly: [],
   daily: [],
@@ -42,6 +43,16 @@ export const fetchCurrentWeather = createAsyncThunk(
     return response.data.data;
   }
 );
+
+export const fetchActiveWeather = createAsyncThunk(
+  'weather/fetchActiveWeather',
+  async coord => {
+    const response = await axios.get(`${weatherApi}/oneCall/${coord}`);
+    console.log(response);
+    return response.data.data;
+  }
+);
+
 export const fetchHourlyWeather = createAsyncThunk(
   'weather/fetchHourlyWeather',
   async () => {
@@ -63,20 +74,44 @@ export const fetchDailyWeather = createAsyncThunk(
 export const weatherSlice = createSlice({
   name: 'weather',
   initialState,
-  reducers: {},
+  reducers: {
+    locationAdded: {
+      reducer(state, action) {
+        weatherAdapter.addOne(state, action.payload);
+      },
+    },
+    locationUpdated: {
+      reducer(state, action) {
+        state.activeLocation = action.payload;
+      },
+    },
+  },
   extraReducers: {
+    // Active location weather
+    [fetchActiveWeather.pending]: (state, action) => {
+      state.status = 'loading';
+    },
+    [fetchActiveWeather.fulfilled]: (state, action) => {
+      state.status = 'succeeded';
+      state.current = { ...action.payload };
+    },
+    [fetchActiveWeather.rejected]: (state, action) => {
+      state.status = 'failed';
+      state.error = action.error.message;
+    },
+    // Current weather
     [fetchCurrentWeather.pending]: (state, action) => {
       state.status = 'loading';
     },
     [fetchCurrentWeather.fulfilled]: (state, action) => {
       state.status = 'succeeded';
-
       state.current = { ...action.payload };
     },
     [fetchCurrentWeather.rejected]: (state, action) => {
       state.status = 'failed';
       state.error = action.error.message;
     },
+    // Hourly weather
     [fetchHourlyWeather.pending]: (state, action) => {
       state.status = 'loading';
     },
@@ -88,6 +123,7 @@ export const weatherSlice = createSlice({
       state.status = 'failed';
       state.error = action.error.message;
     },
+    // Daily weather
     [fetchDailyWeather.pending]: (state, action) => {
       state.status = 'loading';
     },
@@ -102,4 +138,14 @@ export const weatherSlice = createSlice({
   },
 });
 
+export const { locationAdded, locationUpdated } = weatherSlice.actions;
+
 export default weatherSlice.reducer;
+
+// Export the customized selectors for this adapter using `getSelectors`
+export const {
+  selectAll: selectAllLocation,
+  selectById: selectLocationById,
+  selectIds: selectLocationsIds,
+  // Pass in a selector that returns the posts slice of state
+} = weatherAdapter.getSelectors(state => state.weather);

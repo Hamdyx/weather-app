@@ -1,21 +1,17 @@
-import { ChakraProvider, Box, HStack, Spacer } from '@chakra-ui/react';
-import theme from './theme';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
 import WeatherMain from './features/WeatherMain';
+import reportWebVitals from './reportWebVitals';
 
 function App() {
   return (
-    <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl" h="100%" className="main-content">
-        <HStack spacing={6} p={4} h={50}>
-          <Spacer />
-
-          <ColorModeSwitcher justifySelf="flex-end" />
-        </HStack>
-        <WeatherMain />
-      </Box>
-    </ChakraProvider>
+    <>
+      <WeatherMain />
+    </>
   );
 }
 
 export default App;
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();

@@ -8,7 +8,7 @@ import {
   Spacer,
   Heading,
 } from '@chakra-ui/react';
-import { fetchCurrentWeather } from './weatherSlice';
+import { fetchCurrentWeather, selectLocationById } from './weatherSlice';
 import HourlySlider from './HourlySlider';
 import DailyForecast from './DailyForecast';
 import { formatMtoKm, formatSpeedMtoKm } from '../util/util';
@@ -16,17 +16,19 @@ import WeatherSub from './WeatherSub';
 
 function WeatherMain() {
   const dispatch = useDispatch();
+  const activeLocation = useSelector(state => state.weather.activeLocation);
 
   useEffect(() => {
     // fetch current weather data into state.weather.current
     dispatch(fetchCurrentWeather());
   }, [dispatch]);
 
-  // update data every 5 minutes
-  // setInterval(fetchData, 1000);
   return (
     <Flex direction="column" flex={1}>
-      <WeatherHeader location="Cairo, EG" data={{ temp: 10, feelsLike: 10 }} />
+      <WeatherHeader
+        location={activeLocation}
+        data={{ temp: 10, feelsLike: 10 }}
+      />
       <Spacer />
       <HourlySlider />
       <Spacer />
@@ -38,7 +40,15 @@ function WeatherMain() {
 }
 
 function WeatherHeader(props) {
+  const location = useSelector(state =>
+    selectLocationById(state, props.location)
+  );
   const currentWeather = useSelector(state => state.weather.current);
+  if (location === undefined) {
+    return <div>choose a location</div>;
+  }
+  console.log('WeatherHeader');
+  console.log(location);
   const {
     temp,
     feels_like,
@@ -55,7 +65,7 @@ function WeatherHeader(props) {
     <Center p={4}>
       <VStack spacing="1rem">
         <Heading as="h1" size="lg">
-          {props.location}
+          {`${location.name}, ${location.country}`}
         </Heading>
         <HStack>
           <img

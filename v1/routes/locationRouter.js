@@ -3,6 +3,7 @@ const express = require('express');
 const {
   fetchLocations,
   fetchCoordinatesByName,
+  getFilteredLocations,
 } = require('../controllers/locationCOntroller');
 
 const router = express.Router();
@@ -11,5 +12,6 @@ const router = express.Router();
 router.route('/').get(fetchLocations);
 // fetch locations by name
 router.route('/:name').get(fetchCoordinatesByName);
+router.route('/search/:str').get(getFilteredLocations);
 
 module.exports = router;

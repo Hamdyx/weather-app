@@ -15,7 +15,6 @@ import {
 
 import { formatUnixTime } from '../util/util';
 
-const axios = require('axios');
 function WeatherSub() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const todayData = useSelector(state => state.weather.daily[0]);
