@@ -1,12 +1,18 @@
+import { useSelector } from 'react-redux';
+
 import WeatherMain from './features/WeatherMain';
 import reportWebVitals from './reportWebVitals';
 
 function App() {
-  return (
-    <>
-      <WeatherMain />
-    </>
-  );
+  const activeLocation = useSelector(state => state.weather.activeLocation);
+
+  let content;
+  if (activeLocation === '') {
+    content = <div>choose a location</div>;
+  } else {
+    content = <WeatherMain />;
+  }
+  return <>{content}</>;
 }
 
 export default App;

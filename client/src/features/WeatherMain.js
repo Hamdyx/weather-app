@@ -44,9 +44,6 @@ function WeatherHeader(props) {
     selectLocationById(state, props.location)
   );
   const currentWeather = useSelector(state => state.weather.current);
-  if (location === undefined) {
-    return <div>choose a location</div>;
-  }
   console.log('WeatherHeader');
   console.log(location);
   const {
