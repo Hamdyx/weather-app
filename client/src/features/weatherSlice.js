@@ -93,8 +93,6 @@ export const weatherSlice = createSlice({
     },
     [fetchActiveWeather.fulfilled]: (state, action) => {
       state.status = 'succeeded';
-      // console.log('fetchActiveWeather');
-      // console.log(action.payload);
       state.current = { ...action.payload };
     },
     [fetchActiveWeather.rejected]: (state, action) => {
@@ -107,8 +105,6 @@ export const weatherSlice = createSlice({
     },
     [fetchCurrentWeather.fulfilled]: (state, action) => {
       state.status = 'succeeded';
-      // console.log('fetchCUrrentWeather');
-      // console.log(action.payload);
       state.current = { ...action.payload };
     },
     [fetchCurrentWeather.rejected]: (state, action) => {
@@ -121,8 +117,6 @@ export const weatherSlice = createSlice({
     },
     [fetchHourlyWeather.fulfilled]: (state, action) => {
       state.status = 'succeeded';
-      // console.log('fetchHourlyWeather');
-      // console.log(action.payload);
       state.hourly = { ...action.payload };
     },
     [fetchHourlyWeather.rejected]: (state, action) => {
@@ -135,8 +129,6 @@ export const weatherSlice = createSlice({
     },
     [fetchDailyWeather.fulfilled]: (state, action) => {
       state.status = 'succeeded';
-      // console.log('featchDailyWeather');
-      // console.log(action.payload);
       state.daily = { ...action.payload };
     },
     [fetchDailyWeather.rejected]: (state, action) => {

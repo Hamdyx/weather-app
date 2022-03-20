@@ -23,8 +23,6 @@ function WeatherMain() {
     dispatch(fetchCurrentWeather());
   }, [dispatch]);
 
-  // update data every 5 minutes
-  // setInterval(fetchData, 1000);
   return (
     <Flex direction="column" flex={1}>
       <WeatherHeader
