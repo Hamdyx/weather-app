@@ -1,12 +1,26 @@
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
+
 import WeatherMain from './features/WeatherMain';
 import reportWebVitals from './reportWebVitals';
 
 function App() {
-  return (
-    <>
-      <WeatherMain />
-    </>
-  );
+  const router = useRouter();
+  const activeLocation = useSelector(state => state.weather.activeLocation);
+
+  let content = <div>Loading...</div>;
+
+  useEffect(() => {
+    if (activeLocation === '') {
+      router.push('/locations');
+    }
+  }, [activeLocation, router]);
+
+  if (activeLocation !== '') {
+    content = <WeatherMain />;
+  }
+  return <>{content}</>;
 }
 
 export default App;

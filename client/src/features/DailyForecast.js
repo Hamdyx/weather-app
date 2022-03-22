@@ -1,18 +1,12 @@
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchDailyWeather } from './weatherSlice';
+import { useSelector } from 'react-redux';
+
 import { HStack, Box, Grid, GridItem, Image } from '@chakra-ui/react';
 
 import { formatUnixDay } from '../util/util';
 
 function DailyForecast() {
-  const dispatch = useDispatch();
   const dailyItems = useSelector(state => state.weather.daily);
   let content = [];
-
-  useEffect(() => {
-    dispatch(fetchDailyWeather());
-  }, [dispatch]);
 
   for (const [k, v] of Object.entries(dailyItems)) {
     content.push(v);
