@@ -8,7 +8,7 @@ import {
   Spacer,
   Heading,
 } from '@chakra-ui/react';
-import { fetchCurrentWeather, selectLocationById } from './weatherSlice';
+import { fetchActiveWeather, selectLocationById } from './weatherSlice';
 import HourlySlider from './HourlySlider';
 import DailyForecast from './DailyForecast';
 import { formatMtoKm, formatSpeedMtoKm } from '../util/util';
@@ -19,9 +19,9 @@ function WeatherMain() {
   const activeLocation = useSelector(state => state.weather.activeLocation);
 
   useEffect(() => {
-    // fetch current weather data into state.weather.current
-    dispatch(fetchCurrentWeather());
-  }, [dispatch]);
+    // fetch all weather data and forecast
+    dispatch(fetchActiveWeather(activeLocation));
+  }, [dispatch, activeLocation]);
 
   return (
     <Flex direction="column" flex={1}>

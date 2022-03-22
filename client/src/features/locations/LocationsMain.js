@@ -1,10 +1,10 @@
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 import {
   locationAdded,
   locationUpdated,
-  fetchActiveWeather,
   selectLocationById,
   selectLocationsIds,
 } from '../weatherSlice.js';
@@ -23,6 +23,7 @@ import {
 const axios = require('axios');
 
 function Locations() {
+  const router = useRouter();
   const dispatch = useDispatch();
   const locationIds = useSelector(state => selectLocationsIds(state));
   console.log(locationIds);
@@ -32,7 +33,7 @@ function Locations() {
   };
   const handleLocationUpdate = loc => {
     dispatch(locationUpdated(loc));
-    dispatch(fetchActiveWeather(loc));
+    router.push('/');
   };
 
   let locationContent = locationIds.map(el => (

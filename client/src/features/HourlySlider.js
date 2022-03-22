@@ -1,17 +1,10 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchHourlyWeather } from './weatherSlice';
+import { useSelector } from 'react-redux';
 
 import { Text, HStack, Box } from '@chakra-ui/react';
 import { formatUnixTime } from '../util/util';
 
 function HourlySlider() {
-  const dispatch = useDispatch();
   const allHoursData = useSelector(state => state.weather.hourly);
-
-  useEffect(() => {
-    dispatch(fetchHourlyWeather());
-  }, [dispatch]);
 
   let hourlyItems;
 

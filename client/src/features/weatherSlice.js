@@ -93,7 +93,10 @@ export const weatherSlice = createSlice({
     },
     [fetchActiveWeather.fulfilled]: (state, action) => {
       state.status = 'succeeded';
-      state.current = { ...action.payload };
+      console.log(action.payload);
+      state.current = { ...action.payload.current };
+      state.hourly = { ...action.payload.hourly };
+      state.daily = { ...action.payload.daily };
     },
     [fetchActiveWeather.rejected]: (state, action) => {
       state.status = 'failed';
