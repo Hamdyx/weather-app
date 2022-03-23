@@ -26,7 +26,6 @@ function Locations() {
   const router = useRouter();
   const dispatch = useDispatch();
   const locationIds = useSelector(state => selectLocationsIds(state));
-  console.log(locationIds);
 
   const handleLocationAdd = loc => {
     dispatch(locationAdded(loc));
@@ -49,10 +48,15 @@ function Locations() {
       `http://127.0.0.1:8000/api/v1/locations/search/${value}`
     );
     if (res.data.filteredLocations) {
-      const citiesList = res.data.filteredLocations.map((city, i) => {
+      const citiesArr = res.data.filteredLocations;
+      const filtered = citiesArr.filter(city => !locationIds.includes(city.id));
+      const citiesContent = filtered.map((city, i) => {
         return <LocationItem key={i} city={city} addFn={handleLocationAdd} />;
       });
-      ReactDOM.render(citiesList, document.querySelector('#location-list'));
+      // console.log(citiesList);
+      /*
+       */
+      ReactDOM.render(citiesContent, document.querySelector('#location-list'));
     } else {
       ReactDOM.render('', document.querySelector('#location-list'));
     }
@@ -151,6 +155,7 @@ function LocationItem({ city, addFn }) {
   const handleClick = e => {
     // Add the clicked locaiton to managed cities
     addFn(city);
+    e.currentTarget.remove();
   };
 
   return <li onClick={handleClick}>{`${name}, ${country} - ${state}`}</li>;
