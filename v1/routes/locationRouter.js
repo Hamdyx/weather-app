@@ -4,7 +4,7 @@ const {
   fetchLocations,
   fetchCoordinatesByName,
   getFilteredLocations,
-} = require('../controllers/locationCOntroller');
+} = require('../controllers/locationController');
 
 const router = express.Router();
 
