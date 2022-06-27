@@ -44,21 +44,28 @@ function Locations() {
       ReactDOM.render('', document.querySelector('#location-list'));
       return;
     }
-    const res = await axios.get(
-      `http://127.0.0.1:8000/api/v1/locations/search/${value}`
-    );
-    if (res.data.filteredLocations) {
-      const citiesArr = res.data.filteredLocations;
-      const filtered = citiesArr.filter(city => !locationIds.includes(city.id));
-      const citiesContent = filtered.map((city, i) => {
-        return <LocationItem key={i} city={city} addFn={handleLocationAdd} />;
-      });
-      // console.log(citiesList);
-      /*
-       */
-      ReactDOM.render(citiesContent, document.querySelector('#location-list'));
-    } else {
-      ReactDOM.render('', document.querySelector('#location-list'));
+    try {
+      const res = await axios.get(
+        `http://127.0.0.1:8000/api/v1/locations/search/${value}`
+      );
+      if (res.data.filteredLocations) {
+        const citiesArr = res.data.filteredLocations;
+        const filtered = citiesArr.filter(
+          city => !locationIds.includes(city.id)
+        );
+        const citiesContent = filtered.map((city, i) => {
+          return <LocationItem key={i} city={city} addFn={handleLocationAdd} />;
+        });
+
+        ReactDOM.render(
+          citiesContent,
+          document.querySelector('#location-list')
+        );
+      } else {
+        ReactDOM.render('', document.querySelector('#location-list'));
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

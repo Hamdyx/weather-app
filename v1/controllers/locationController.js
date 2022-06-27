@@ -30,7 +30,7 @@ exports.getFilteredLocations = async (req, res) => {
   const re = new RegExp(`^(${str})[a-z0-9_-]*$`, 'i');
   const filteredLocations = locations.filter(l => {
     let city = l.name;
-    return city.match(re) ? true : false;
+    return city?.match(re) ? true : false;
   });
   res.status(200).json({
     status: 'success',
