@@ -48,7 +48,7 @@ export const fetchActiveWeather = createAsyncThunk(
   'weather/fetchActiveWeather',
   async coord => {
     const response = await axios.get(`${weatherApi}/oneCall/${coord}`);
-    console.log(response);
+    console.log('fetchActiveWeather', { coord, response });
     return response.data.data;
   }
 );
@@ -93,7 +93,7 @@ export const weatherSlice = createSlice({
     },
     [fetchActiveWeather.fulfilled]: (state, action) => {
       state.status = 'succeeded';
-      console.log(action.payload);
+      console.log('fetchActiveWeather.fulfilled', { payload: action.payload });
       state.current = { ...action.payload.current };
       state.hourly = { ...action.payload.hourly };
       state.daily = { ...action.payload.daily };

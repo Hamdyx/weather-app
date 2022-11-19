@@ -9,9 +9,9 @@ export default function Navbar() {
       <Link href="/">
         <a href="/">Home</a>
       </Link>
-      <Link href="/locations">
+      {/* <Link href="/locations">
         <a href="/locations">locations</a>
-      </Link>
+      </Link> */}
       <Spacer />
 
       <ColorModeSwitcher justifySelf="flex-end" />

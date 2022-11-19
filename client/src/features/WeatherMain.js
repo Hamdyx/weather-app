@@ -16,10 +16,11 @@ import WeatherSub from './WeatherSub';
 
 function WeatherMain() {
   const dispatch = useDispatch();
-  const activeLocation = useSelector(state => state.weather.activeLocation);
+  // const activeLocation = useSelector(state => state.weather.activeLocation);
+  const activeLocation = "30.0443879-31.2357257"; // Cairo, EG
 
   useEffect(() => {
-    // fetch all weather data and forecast
+    console.log('WeatherMain => useEffect[]', { activeLocation });
     dispatch(fetchActiveWeather(activeLocation));
   }, [dispatch, activeLocation]);
 
@@ -27,7 +28,6 @@ function WeatherMain() {
     <Flex direction="column" flex={1}>
       <WeatherHeader
         location={activeLocation}
-        data={{ temp: 10, feelsLike: 10 }}
       />
       <Spacer />
       <HourlySlider />
@@ -44,8 +44,7 @@ function WeatherHeader(props) {
     selectLocationById(state, props.location)
   );
   const currentWeather = useSelector(state => state.weather.current);
-  console.log('WeatherHeader');
-  console.log(location);
+  console.log('WeatherHeader', { props, location, currentWeather });
   const {
     temp,
     feels_like,
@@ -62,7 +61,8 @@ function WeatherHeader(props) {
     <Center p={4}>
       <VStack spacing="1rem">
         <Heading as="h1" size="lg">
-          {`${location.name}, ${location.country}`}
+          {/* {`${location?.name}, ${location?.country}`} */}
+          Cairo, EG
         </Heading>
         <HStack>
           <img
