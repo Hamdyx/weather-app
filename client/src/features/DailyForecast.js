@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { HStack, Box, Grid, GridItem, Image } from '@chakra-ui/react';
+import { HStack, Box, Grid, GridItem, Image, Skeleton } from '@chakra-ui/react';
 
 import { formatUnixDay } from '../util/util';
 
@@ -8,7 +8,7 @@ function DailyForecast() {
   const dailyItems = useSelector(state => state.weather.daily);
   let content = [];
 
-  for (const [k, v] of Object.entries(dailyItems)) {
+  for (const v of Object.values(dailyItems)) {
     content.push(v);
   }
 
@@ -17,9 +17,16 @@ function DailyForecast() {
   });
 
   return (
-    <Box layerStyle="hourly" className="days-forecast" p={4}>
-      {content}
-    </Box>
+    <Skeleton
+      height='420px'
+      isLoaded={content.length > 0}
+      fadeDuration={2}
+    >
+      <Box layerStyle="hourly" className="days-forecast" p={4}>
+        {content}
+      </Box>
+    </Skeleton>
+
   );
 }
 

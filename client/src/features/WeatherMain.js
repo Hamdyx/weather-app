@@ -7,6 +7,7 @@ import {
   Flex,
   Spacer,
   Heading,
+  Skeleton,
 } from '@chakra-ui/react';
 import { fetchActiveWeather, selectLocationById } from './weatherSlice';
 import HourlySlider from './HourlySlider';
@@ -65,16 +66,26 @@ function WeatherHeader(props) {
           Cairo, EG
         </Heading>
         <HStack>
-          <img
-            src={cloudIcon}
-            alt={`${'icon'}`}
-            width={65}
-            height={65}
-            className="curr-icon"
-          />
-          <Heading as="h2" size="4xl" align="center" className="curr-temp">
-            {`${Math.round(temp)}\u00b0`}
-          </Heading>
+          <Skeleton
+            isLoaded={weather}
+            fadeDuration={2}
+          >
+            <img
+              src={cloudIcon}
+              alt={`${'icon'}`}
+              width={65}
+              height={65}
+              className="curr-icon"
+            />
+          </Skeleton>
+          <Skeleton
+            isLoaded={temp}
+            fadeDuration={2}
+          >
+            <Heading as="h2" size="4xl" align="center" className="curr-temp">
+              {`${Math.round(temp)}\u00b0`}
+            </Heading>
+          </Skeleton>
         </HStack>
         <Spacer />
 

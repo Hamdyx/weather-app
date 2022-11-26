@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { Text, HStack, Box } from '@chakra-ui/react';
+import { Text, HStack, Box, Skeleton } from '@chakra-ui/react';
 import { formatUnixTime } from '../util/util';
 
 function HourlySlider() {
@@ -27,16 +27,22 @@ function HourlySlider() {
   });
 
   return (
-    <Box layerStyle="hourly">
-      <HStack
-        spacing="8px"
-        justifyContent="center"
-        className="hourly-slider"
-        p={1}
-      >
-        {hourlyItems}
-      </HStack>
-    </Box>
+    <Skeleton
+      height='101px'
+      isLoaded={hourlyArr.length > 0}
+      fadeDuration={1}
+    >
+      <Box layerStyle="hourly">
+        <HStack
+          spacing="8px"
+          justifyContent="center"
+          className="hourly-slider"
+          p={1}
+        >
+          {hourlyItems}
+        </HStack>
+      </Box>
+    </Skeleton>
   );
 }
 
