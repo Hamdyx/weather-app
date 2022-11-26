@@ -1,26 +1,26 @@
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
-
+// import { useEffect } from 'react';
+// import { useRouter } from 'next/router';
+// import { useSelector } from 'react-redux';
 import WeatherMain from './features/WeatherMain';
 import reportWebVitals from './reportWebVitals';
 
 function App() {
-  const router = useRouter();
-  const activeLocation = useSelector(state => state.weather.activeLocation);
+  // const router = useRouter();
+  // const activeLocation = useSelector(state => state.weather.activeLocation);
+  // const activeLocation = "30.0443879-31.2357257"; // Cairo, EG
 
-  let content = <div>Loading...</div>;
+  // let content = <div>Loading...</div>;
 
-  useEffect(() => {
-    if (activeLocation === '') {
-      router.push('/locations');
-    }
-  }, [activeLocation, router]);
+  // useEffect(() => {
+  //   if (activeLocation === '') {
+  //     router.push('/locations');
+  //   }
+  // }, [activeLocation, router]);
 
-  if (activeLocation !== '') {
-    content = <WeatherMain />;
-  }
-  return <>{content}</>;
+  // if (activeLocation !== '') {
+  //   content = <WeatherMain />;
+  // }
+  return <WeatherMain />;
 }
 
 export default App;

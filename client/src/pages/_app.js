@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Layout from '../components/layout';
+import { Analytics } from '@vercel/analytics/react';
 import '../../public/styles/index.css';
 
 export default function MyApp({ Component, pageProps }) {
@@ -11,6 +12,7 @@ export default function MyApp({ Component, pageProps }) {
       <Layout>
         <Component {...pageProps} />
       </Layout>
+      <Analytics />
     </>
   );
 }
