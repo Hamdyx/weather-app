@@ -7,9 +7,7 @@ import {
 const axios = require('axios');
 const apiKey = process.env.API_KEY;
 const endpoint = 'https://api.openweathermap.org/data/2.5/onecall?';
-const weatherAdapter = createEntityAdapter({
-  // selectId: (item) => item.customId
-});
+const weatherAdapter = createEntityAdapter({});
 
 const initialState = weatherAdapter.getInitialState({
   activeLocation: '',
