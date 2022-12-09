@@ -6,7 +6,7 @@ import {
 
 const axios = require('axios');
 const apiKey = process.env.API_KEY;
-
+const endpoint = 'https://api.openweathermap.org/data/2.5/onecall?';
 const weatherAdapter = createEntityAdapter({
   // selectId: (item) => item.customId
 });
@@ -23,7 +23,7 @@ const initialState = weatherAdapter.getInitialState({
 export const fetchActiveWeather = createAsyncThunk(
   'weather/fetchActiveWeather',
   async coord => {
-    const endpoint = 'https://api.openweathermap.org/data/2.5/onecall?';
+    console.log('weatherSlice', { apiKey, env: process.env.API_KEY });
     const [lat, lon] = coord.split('-');
     const results = await axios.get(
       `${endpoint}lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
