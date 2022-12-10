@@ -31,3 +31,7 @@ main #root {
 p.day-forecast {
   margin-left: auto !important;
 }
+.curr_weather > * {
+  display: flex;
+  gap: 5px;
+}
