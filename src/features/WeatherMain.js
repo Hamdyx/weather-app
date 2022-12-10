@@ -9,7 +9,7 @@ import {
   Heading,
   Skeleton,
 } from '@chakra-ui/react';
-import { fetchActiveWeather, selectLocationById } from './weatherSlice';
+import { fetchActiveWeather } from './weatherSlice';
 import HourlySlider from './HourlySlider';
 import DailyForecast from './DailyForecast';
 import { formatMtoKm, formatSpeedMtoKm } from '../util/util';
@@ -17,11 +17,9 @@ import WeatherSub from './WeatherSub';
 
 function WeatherMain() {
   const dispatch = useDispatch();
-  // const activeLocation = useSelector(state => state.weather.activeLocation);
   const activeLocation = "30.0443879-31.2357257"; // Cairo, EG
 
   useEffect(() => {
-    console.log('WeatherMain => useEffect[]', { activeLocation });
     dispatch(fetchActiveWeather(activeLocation));
   }, [dispatch, activeLocation]);
 
@@ -40,12 +38,8 @@ function WeatherMain() {
   );
 }
 
-function WeatherHeader(props) {
-  const location = useSelector(state =>
-    selectLocationById(state, props.location)
-  );
+function WeatherHeader() {
   const currentWeather = useSelector(state => state.weather.current);
-  console.log('WeatherHeader', { props, location, currentWeather });
   const {
     temp,
     feels_like,
@@ -88,28 +82,63 @@ function WeatherHeader(props) {
           </Skeleton>
         </HStack>
         <Spacer />
-
-        <HStack spacing={['1rem', '2rem']}>
-          <Heading as="h3" size="xs" align="left" className="curr-feelsLike">
-            Feels like {`${Math.round(feels_like)}\u00b0`}
+        <HStack spacing={['1rem', '2rem']} className="curr_weather">
+          <Heading as="h3" size="xs" align="left">
+            Feels like
+            <Skeleton
+              isLoaded={feels_like}
+              fadeDuration={2}
+            >
+              {`${Math.round(feels_like)}\u00b0`}
+            </Skeleton>
           </Heading>
-          <Heading as="h3" size="xs" align="left" className="curr-wind">
-            Wind {`${formatSpeedMtoKm(wind_speed)} km/h`}
+          <Heading as="h3" size="xs" align="left">
+            Wind
+            <Skeleton
+              isLoaded={feels_like}
+              fadeDuration={2}
+            >
+              {`${formatSpeedMtoKm(wind_speed)} km/h`}
+            </Skeleton>
           </Heading>
-          <Heading as="h3" size="xs" align="left" className="curr-visibility">
-            Visibility {`${formatMtoKm(visibility)} km`}
+          <Heading as="h3" size="xs" align="left">
+            Visibility
+            <Skeleton
+              isLoaded={feels_like}
+              fadeDuration={2}
+            >
+              {`${formatMtoKm(visibility)} km`}
+            </Skeleton>
           </Heading>
         </HStack>
         <Spacer />
-        <HStack spacing={['.75rem', '2rem']}>
-          <Heading as="h3" size="xs" align="left" className="curr-pressure">
-            Pressure {`${Math.round(pressure)} mb`}
+        <HStack spacing={['.75rem', '2rem']} className="curr_weather">
+          <Heading as="h3" size="xs" align="left">
+            Pressure
+            <Skeleton
+              isLoaded={feels_like}
+              fadeDuration={2}
+            >
+              {`${Math.round(pressure)} mb`}
+            </Skeleton>
           </Heading>
-          <Heading as="h3" size="xs" align="left" className="curr-humidity">
-            Humidity {`${Math.round(humidity)}%`}
+          <Heading as="h3" size="xs" align="left">
+            Humidity
+            <Skeleton
+              isLoaded={feels_like}
+              fadeDuration={2}
+            >
+              {`${Math.round(humidity)}%`}
+            </Skeleton>
           </Heading>
-          <Heading as="h3" size="xs" align="left" className="curr-dewpoint">
-            Dew Point {`${Math.round(dew_point)}\u00b0`}
+          <Heading as="h3" size="xs" align="left">
+            Dew Point
+            <Skeleton
+              isLoaded={feels_like}
+              fadeDuration={2}
+            >
+              {`${Math.round(dew_point)}\u00b0`}
+            </Skeleton>
           </Heading>
         </HStack>
       </VStack>
