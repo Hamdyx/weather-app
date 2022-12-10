@@ -48,7 +48,7 @@ export const weatherSlice = createSlice({
   },
   extraReducers: {
     // Active location weather
-    [fetchActiveWeather.pending]: (state, action) => {
+    [fetchActiveWeather.pending]: (state) => {
       state.status = 'loading';
     },
     [fetchActiveWeather.rejected]: (state, action) => {
@@ -68,10 +68,8 @@ export const { locationAdded, locationUpdated } = weatherSlice.actions;
 
 export default weatherSlice.reducer;
 
-// Export the customized selectors for this adapter using `getSelectors`
 export const {
   selectAll: selectAllLocation,
   selectById: selectLocationById,
   selectIds: selectLocationsIds,
-  // Pass in a selector that returns the posts slice of state
 } = weatherAdapter.getSelectors(state => state.weather);
