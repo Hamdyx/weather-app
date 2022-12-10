@@ -9,7 +9,7 @@ import {
   Heading,
   Skeleton,
 } from '@chakra-ui/react';
-import { fetchActiveWeather, selectLocationById } from './weatherSlice';
+import { fetchActiveWeather } from './weatherSlice';
 import HourlySlider from './HourlySlider';
 import DailyForecast from './DailyForecast';
 import { formatMtoKm, formatSpeedMtoKm } from '../util/util';
@@ -17,11 +17,9 @@ import WeatherSub from './WeatherSub';
 
 function WeatherMain() {
   const dispatch = useDispatch();
-  // const activeLocation = useSelector(state => state.weather.activeLocation);
   const activeLocation = "30.0443879-31.2357257"; // Cairo, EG
 
   useEffect(() => {
-    console.log('WeatherMain => useEffect[]', { activeLocation });
     dispatch(fetchActiveWeather(activeLocation));
   }, [dispatch, activeLocation]);
 
@@ -40,12 +38,8 @@ function WeatherMain() {
   );
 }
 
-function WeatherHeader(props) {
-  const location = useSelector(state =>
-    selectLocationById(state, props.location)
-  );
+function WeatherHeader() {
   const currentWeather = useSelector(state => state.weather.current);
-  console.log('WeatherHeader', { props, location, currentWeather });
   const {
     temp,
     feels_like,

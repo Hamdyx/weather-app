@@ -21,7 +21,6 @@ const initialState = weatherAdapter.getInitialState({
 export const fetchActiveWeather = createAsyncThunk(
   'weather/fetchActiveWeather',
   async coord => {
-    console.log('weatherSlice', { apiKey, env: process.env.NEXT_PUBLIC_API_KEY });
     const [lat, lon] = coord.split('-');
     const results = await axios.get(
       `${endpoint}lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
@@ -58,7 +57,6 @@ export const weatherSlice = createSlice({
     },
     [fetchActiveWeather.fulfilled]: (state, action) => {
       state.status = 'succeeded';
-      console.log('fetchActiveWeather.fulfilled', { payload: action.payload });
       state.current = { ...action.payload.current };
       state.hourly = { ...action.payload.hourly };
       state.daily = { ...action.payload.daily };
