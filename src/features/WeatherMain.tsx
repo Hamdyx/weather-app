@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Center,
   VStack,
@@ -14,10 +14,11 @@ import HourlySlider from './HourlySlider';
 import DailyForecast from './DailyForecast';
 import { formatMtoKm, formatSpeedMtoKm } from '../util/util';
 import WeatherSub from './WeatherSub';
+import { RootState, useAppDispatch } from 'app/store';
 
 function WeatherMain() {
-  const dispatch = useDispatch();
-  const activeLocation = "30.0443879-31.2357257"; // Cairo, EG
+  const dispatch = useAppDispatch();
+  const activeLocation = '30.0443879-31.2357257'; // Cairo, EG
 
   useEffect(() => {
     dispatch(fetchActiveWeather(activeLocation));
@@ -26,7 +27,7 @@ function WeatherMain() {
   return (
     <Flex direction="column" flex={1}>
       <WeatherHeader
-        location={activeLocation}
+      //  location={activeLocation}
       />
       <Spacer />
       <HourlySlider />
@@ -39,7 +40,9 @@ function WeatherMain() {
 }
 
 function WeatherHeader() {
-  const currentWeather = useSelector(state => state.weather.current);
+  const currentWeather = useSelector(
+    (state: RootState) => state.weather.current
+  );
   const {
     temp,
     feels_like,
@@ -60,10 +63,7 @@ function WeatherHeader() {
           Cairo, EG
         </Heading>
         <HStack>
-          <Skeleton
-            isLoaded={weather}
-            fadeDuration={2}
-          >
+          <Skeleton isLoaded={weather} fadeDuration={2}>
             <img
               src={cloudIcon}
               alt={`${'icon'}`}
@@ -72,71 +72,79 @@ function WeatherHeader() {
               className="curr-icon"
             />
           </Skeleton>
-          <Skeleton
-            isLoaded={temp}
-            fadeDuration={2}
-          >
-            <Heading as="h2" size="4xl" align="center" className="curr-temp">
+          <Skeleton isLoaded={temp} fadeDuration={2}>
+            <Heading
+              as="h2"
+              size="4xl"
+              // align="center"
+              className="curr-temp"
+            >
               {`${Math.round(temp)}\u00b0`}
             </Heading>
           </Skeleton>
         </HStack>
         <Spacer />
         <HStack spacing={['1rem', '2rem']} className="curr_weather">
-          <Heading as="h3" size="xs" align="left">
+          <Heading
+            as="h3"
+            size="xs"
+            // align="left"
+          >
             Feels like
-            <Skeleton
-              isLoaded={feels_like}
-              fadeDuration={2}
-            >
+            <Skeleton isLoaded={feels_like} fadeDuration={2}>
               {`${Math.round(feels_like)}\u00b0`}
             </Skeleton>
           </Heading>
-          <Heading as="h3" size="xs" align="left">
+          <Heading
+            as="h3"
+            size="xs"
+            // align="left"
+          >
             Wind
-            <Skeleton
-              isLoaded={feels_like}
-              fadeDuration={2}
-            >
+            <Skeleton isLoaded={feels_like} fadeDuration={2}>
               {`${formatSpeedMtoKm(wind_speed)} km/h`}
             </Skeleton>
           </Heading>
-          <Heading as="h3" size="xs" align="left">
+          <Heading
+            as="h3"
+            size="xs"
+            // align="left"
+          >
             Visibility
-            <Skeleton
-              isLoaded={feels_like}
-              fadeDuration={2}
-            >
+            <Skeleton isLoaded={feels_like} fadeDuration={2}>
               {`${formatMtoKm(visibility)} km`}
             </Skeleton>
           </Heading>
         </HStack>
         <Spacer />
         <HStack spacing={['.75rem', '2rem']} className="curr_weather">
-          <Heading as="h3" size="xs" align="left">
+          <Heading
+            as="h3"
+            size="xs"
+            // align="left"
+          >
             Pressure
-            <Skeleton
-              isLoaded={feels_like}
-              fadeDuration={2}
-            >
+            <Skeleton isLoaded={feels_like} fadeDuration={2}>
               {`${Math.round(pressure)} mb`}
             </Skeleton>
           </Heading>
-          <Heading as="h3" size="xs" align="left">
+          <Heading
+            as="h3"
+            size="xs"
+            // align="left"
+          >
             Humidity
-            <Skeleton
-              isLoaded={feels_like}
-              fadeDuration={2}
-            >
+            <Skeleton isLoaded={feels_like} fadeDuration={2}>
               {`${Math.round(humidity)}%`}
             </Skeleton>
           </Heading>
-          <Heading as="h3" size="xs" align="left">
+          <Heading
+            as="h3"
+            size="xs"
+            // align="left"
+          >
             Dew Point
-            <Skeleton
-              isLoaded={feels_like}
-              fadeDuration={2}
-            >
+            <Skeleton isLoaded={feels_like} fadeDuration={2}>
               {`${Math.round(dew_point)}\u00b0`}
             </Skeleton>
           </Heading>
