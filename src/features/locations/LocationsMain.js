@@ -1,13 +1,8 @@
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
-import {
-  locationAdded,
-  locationUpdated,
-  selectLocationById,
-  selectLocationsIds,
-} from '../weatherSlice';
+import { locationAdded, locationUpdated } from '../weatherSlice';
 
 import {
   FormControl,
@@ -25,7 +20,8 @@ const axios = require('axios');
 function Locations() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const locationIds = useSelector(state => selectLocationsIds(state));
+  // const locationIds = useSelector(state => selectLocationsIds(state));
+  const locationIds = [];
 
   const handleLocationAdd = loc => {
     dispatch(locationAdded(loc));
@@ -142,7 +138,8 @@ const LocationInput = ({ label, type, changeFn }) => {
 };
 
 const ManagedCity = ({ cityId, updateFn }) => {
-  const city = useSelector(state => selectLocationById(state, cityId));
+  // const city = useSelector(state => selectLocationById(state, cityId));
+  const city = {};
   const {
     name,
     // lat, lon,
