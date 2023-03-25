@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <WeatherMain />;
+      <WeatherMain />
     </>
   );
 }
