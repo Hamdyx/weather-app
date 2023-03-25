@@ -1,13 +1,8 @@
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
-import {
-  locationAdded,
-  locationUpdated,
-  selectLocationById,
-  selectLocationsIds,
-} from '../weatherSlice.js';
+import { locationAdded, locationUpdated } from '../weatherSlice';
 
 import {
   FormControl,
@@ -25,7 +20,8 @@ const axios = require('axios');
 function Locations() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const locationIds = useSelector(state => selectLocationsIds(state));
+  // const locationIds = useSelector(state => selectLocationsIds(state));
+  const locationIds = [];
 
   const handleLocationAdd = loc => {
     dispatch(locationAdded(loc));
@@ -142,8 +138,15 @@ const LocationInput = ({ label, type, changeFn }) => {
 };
 
 const ManagedCity = ({ cityId, updateFn }) => {
-  const city = useSelector(state => selectLocationById(state, cityId));
-  const { name, lat, lon, country, state, id } = city;
+  // const city = useSelector(state => selectLocationById(state, cityId));
+  const city = {};
+  const {
+    name,
+    // lat, lon,
+    country,
+    state,
+    id,
+  } = city;
 
   const handleClick = ev => {
     // update the activeLocation state with the clicked value
@@ -158,7 +161,12 @@ const ManagedCity = ({ cityId, updateFn }) => {
 };
 
 function LocationItem({ city, addFn }) {
-  const { name, lat, lon, country, state, id } = city;
+  const {
+    name,
+    country,
+    state,
+    // lat, lon, id
+  } = city;
   const handleClick = e => {
     // Add the clicked locaiton to managed cities
     addFn(city);

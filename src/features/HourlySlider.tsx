@@ -1,20 +1,20 @@
 import { useSelector } from 'react-redux';
-
 import { Text, HStack, Box, Skeleton } from '@chakra-ui/react';
+import { RootState } from 'app/store';
 import { formatUnixTime } from '../util/util';
 
 function HourlySlider() {
-  const allHoursData = useSelector(state => state.weather.hourly);
+  const allHoursData = useSelector((state: RootState) => state.weather.hourly);
 
   let hourlyItems;
 
   const hourlyArr = [];
   for (const [k, v] of Object.entries(allHoursData)) {
-    if (k < 1) {
+    if (+k < 1) {
       // skip first hour as it's the current hour
       continue;
     }
-    if (k > 5) {
+    if (+k > 5) {
       // get only 5 items
       break;
     }
@@ -27,11 +27,7 @@ function HourlySlider() {
   });
 
   return (
-    <Skeleton
-      height='101px'
-      isLoaded={hourlyArr.length > 0}
-      fadeDuration={1}
-    >
+    <Skeleton height="101px" isLoaded={hourlyArr.length > 0} fadeDuration={1}>
       <Box layerStyle="hourly">
         <HStack
           spacing="8px"
@@ -46,7 +42,7 @@ function HourlySlider() {
   );
 }
 
-const HourlyItem = ({ data }) => {
+function HourlyItem({ data }: any) {
   const { dt, temp, weather } = data;
   const cloudIcon = `icons/${weather[0].icon}.png`;
   return (
@@ -66,6 +62,6 @@ const HourlyItem = ({ data }) => {
       )}\u00b0`}</Text>
     </Box>
   );
-};
+}
 
 export default HourlySlider;
