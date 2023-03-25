@@ -6,14 +6,22 @@ import {
   Spacer,
   Heading,
   Skeleton,
+  Button,
+  Spinner,
+  useToast,
 } from '@chakra-ui/react';
-import { RootState } from 'app/store';
+import { RootState, useAppDispatch } from 'app/store';
 import { formatMtoKm, formatSpeedMtoKm } from '../util/util';
+import { RepeatIcon } from '@chakra-ui/icons';
+import { fetchActiveWeather } from './weatherSlice';
 
 function WeatherHeader() {
-  const currentWeather = useSelector(
-    (state: RootState) => state.weather.current
+  const { current: currentWeather, loading } = useSelector(
+    (state: RootState) => state.weather
   );
+  const dispatch = useAppDispatch();
+  const toast = useToast();
+
   const {
     temp,
     feels_like,
@@ -26,12 +34,40 @@ function WeatherHeader() {
   } = currentWeather;
 
   const cloudIcon = weather ? `icons/${weather[0].icon}.png` : `icons/11n.png`;
+
+  const updateWeather = (ev: any) => {
+    console.log('updateWeather', { ev });
+    dispatch(fetchActiveWeather())
+      .unwrap()
+      .then(() => {
+        toast({
+          title: 'Weather Updated.',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch(() => {
+        toast({
+          title: 'Error Updating Weather.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  };
+
   return (
     <Center p={4}>
       <VStack spacing="1rem">
-        <Heading as="h1" size="lg">
-          Cairo, EG
-        </Heading>
+        <HStack spacing={4}>
+          <Heading as="h1" size="lg">
+            Cairo, EG
+          </Heading>
+          <Button onClick={updateWeather}>
+            {loading ? <Spinner size="sm" /> : <RepeatIcon />}
+          </Button>
+        </HStack>
         <HStack>
           <Skeleton isLoaded={weather} fadeDuration={2}>
             <img
