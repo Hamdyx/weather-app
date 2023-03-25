@@ -143,7 +143,13 @@ const LocationInput = ({ label, type, changeFn }) => {
 
 const ManagedCity = ({ cityId, updateFn }) => {
   const city = useSelector(state => selectLocationById(state, cityId));
-  const { name, lat, lon, country, state, id } = city;
+  const {
+    name,
+    // lat, lon,
+    country,
+    state,
+    id,
+  } = city;
 
   const handleClick = ev => {
     // update the activeLocation state with the clicked value
@@ -158,7 +164,12 @@ const ManagedCity = ({ cityId, updateFn }) => {
 };
 
 function LocationItem({ city, addFn }) {
-  const { name, lat, lon, country, state, id } = city;
+  const {
+    name,
+    country,
+    state,
+    // lat, lon, id
+  } = city;
   const handleClick = e => {
     // Add the clicked locaiton to managed cities
     addFn(city);
