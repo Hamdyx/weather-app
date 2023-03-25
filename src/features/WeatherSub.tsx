@@ -14,10 +14,11 @@ import {
 } from '@chakra-ui/react';
 
 import { formatUnixTime } from '../util/util';
+import { RootState } from 'app/store';
 
 function WeatherSub() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const todayData = useSelector(state => state.weather.daily[0]);
+  const todayData = useSelector((state: RootState) => state.weather.daily[0]);
   let content;
 
   if (todayData) {
@@ -86,7 +87,7 @@ function WeatherSub() {
 
 export default WeatherSub;
 
-function DataStack({ className, value, title }) {
+function DataStack({ className, value, title }: any) {
   return (
     <VStack>
       <Text fontSize="md">{title}</Text>

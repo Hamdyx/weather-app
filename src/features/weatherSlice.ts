@@ -15,7 +15,7 @@ type SliceState = {
 };
 
 const initialState: SliceState = {
-  activeLocation: '',
+  activeLocation: '30.0443879-31.2357257', // Cairo, EG
   current: {},
   hourly: [],
   daily: [],
@@ -25,11 +25,12 @@ const initialState: SliceState = {
 
 export const fetchActiveWeather = createAsyncThunk<
   any,
-  string,
+  void,
   {
     state: RootState;
   }
->('weather/fetchActiveWeather', async coord => {
+>('weather/fetchActiveWeather', async (_, thunkapi) => {
+  const coord = thunkapi.getState().weather.activeLocation;
   const [lat, lon] = coord.split('-');
   const results = await axios.get(
     `${Endpoint}lat=${lat}&lon=${lon}&appid=${ApiKey}&units=metric`
