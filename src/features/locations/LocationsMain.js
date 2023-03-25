@@ -7,7 +7,7 @@ import {
   locationUpdated,
   selectLocationById,
   selectLocationsIds,
-} from '../weatherSlice.js';
+} from '../weatherSlice';
 
 import {
   FormControl,
