@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 
-import '../../public/styles/index.css';
+import { Providers } from './providers';
+
+import './global.css';
 
 export const metadata: Metadata = {
   title: 'Weather App',
@@ -15,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div id="root">{children}</div>
+        <Providers>
+          <div id="root">{children}</div>
+        </Providers>
       </body>
     </html>
   );

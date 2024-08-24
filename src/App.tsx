@@ -1,14 +1,9 @@
-import { ColorModeScript } from '@chakra-ui/react';
+'use client';
+
 import WeatherMain from './features/WeatherMain';
-import theme from './theme';
 
 function App() {
-  return (
-    <>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <WeatherMain />
-    </>
-  );
+  return <WeatherMain />;
 }
 
 export default App;

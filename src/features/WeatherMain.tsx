@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect } from 'react';
 import { Flex, Spacer } from '@chakra-ui/react';
 import { useAppDispatch } from 'app/store';
