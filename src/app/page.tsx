@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import React, { StrictMode } from 'react';
 
-import App from '../App';
+import WeatherMain from 'features/WeatherMain';
 
 export const metadata: Metadata = {
   title: 'Weather App',
@@ -13,7 +13,7 @@ function HomePage() {
     <main>
       <div id="root">
         <StrictMode>
-          <App />
+          <WeatherMain />
         </StrictMode>
       </div>
     </main>
