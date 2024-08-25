@@ -1,13 +1,8 @@
-import type { Metadata } from 'next';
+import Layout from 'components/layout';
 
 import { Providers } from './providers';
 
 import './global.css';
-
-export const metadata: Metadata = {
-  title: 'Weather App',
-  description: 'Web site created with Next.js.',
-};
 
 export default function RootLayout({
   children,
@@ -18,7 +13,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          <div id="root">{children}</div>
+          <Layout>{children}</Layout>
         </Providers>
       </body>
     </html>

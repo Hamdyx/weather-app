@@ -16,17 +16,12 @@
     "react-dom": "^18.3.1",
     "react-icons": "^4.0.0",
     "react-redux": "^8.0.0",
-    "react-scripts": "^5.0.0",
-    "redux": "^4.2.1",
-    "web-vitals": "^3.0.0"
+    "redux": "^4.2.1"
   },
   "scripts": {
     "dev": "next dev",
-    "start": "next start",
     "build": "next build",
-    "lint": "next lint",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "npx serve@latest ./build"
   },
   "eslintConfig": {
     "extends": "react-app"
