@@ -21,7 +21,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "npx serve@latest ./build"
+    "start": "npx serve@latest ./build",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -39,10 +41,16 @@
     ]
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^14.2.6",
     "@types/jest": "^29.5.12",
     "@types/node": "^22.5.0",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.3.0",
+    "@typescript-eslint/parser": "^8.3.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.6",
+    "eslint-config-prettier": "^9.1.0",
     "typescript": "^5.5.4"
   }
 }
