@@ -1,7 +1,7 @@
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { useDispatch } from 'react-redux';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { locationAdded, locationUpdated } from '../weatherSlice';
 
 import {
