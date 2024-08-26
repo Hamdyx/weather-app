@@ -1,3 +1,5 @@
+'use client';
+
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { useDispatch } from 'react-redux';
