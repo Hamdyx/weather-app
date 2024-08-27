@@ -1,10 +1,9 @@
 import { useSelector } from 'react-redux';
-import { Text, HStack, Box, Skeleton } from '@chakra-ui/react';
+import { HStack, Box, Skeleton } from '@chakra-ui/react';
 
 import { RootState } from 'app/store';
 
-import { formatUnixTime } from '../util/util';
-import type { HourlyWeather } from './types';
+import HourlyItem from './components/HourlyItem';
 
 function HourlySlider() {
   const allHoursData = useSelector((state: RootState) => state.weather.hourly);
@@ -40,32 +39,6 @@ function HourlySlider() {
         </HStack>
       </Box>
     </Skeleton>
-  );
-}
-
-interface Props {
-  data: HourlyWeather;
-}
-
-function HourlyItem({ data }: Props) {
-  const { dt, temp, weather } = data;
-  const cloudIcon = `icons/${weather[0].icon}.png`;
-  return (
-    <Box flex={1} h="75%">
-      <Text className="hourly-time" fontSize=".75rem">
-        {formatUnixTime(dt)}
-      </Text>
-      <img
-        src={cloudIcon}
-        alt={`${weather[0].description}`}
-        width={50}
-        height={50}
-        className="hourly-icon"
-      />
-      <Text className="hourly-data" mt="-.5rem">{`${Math.round(
-        temp,
-      )}\u00b0`}</Text>
-    </Box>
   );
 }
 
