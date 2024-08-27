@@ -13,8 +13,9 @@ import {
   Spacer,
 } from '@chakra-ui/react';
 
-import { formatUnixTime } from '../util/util';
 import { RootState } from 'app/store';
+
+import { formatUnixTime } from '../util/util';
 
 function WeatherSub() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -87,7 +88,13 @@ function WeatherSub() {
 
 export default WeatherSub;
 
-function DataStack({ className, value, title }: any) {
+interface Props {
+  className: string;
+  value: string | number;
+  title: string;
+}
+
+function DataStack({ className, value, title }: Props) {
   return (
     <VStack>
       <Text fontSize="md">{title}</Text>

@@ -1,22 +1,25 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from 'app/store';
 import axios from 'axios';
+
+import { RootState } from 'app/store';
+
+import type { CurrentWeather, DailyWeather, HourlyWeather } from './types';
 
 const ApiKey = process.env.NEXT_PUBLIC_API_KEY;
 const Endpoint = process.env.NEXT_PUBLIC_API_URL;
 
 type SliceState = {
   activeLocation: string;
-  current: any;
-  hourly: any[];
-  daily: any[];
+  current: CurrentWeather | null;
+  hourly: HourlyWeather[];
+  daily: DailyWeather[];
   loading: boolean;
   error: string | undefined;
 };
 
 const initialState: SliceState = {
   activeLocation: '30.0443879-31.2357257', // Cairo, EG
-  current: {},
+  current: null,
   hourly: [],
   daily: [],
   loading: false,
@@ -24,7 +27,7 @@ const initialState: SliceState = {
 };
 
 export const fetchActiveWeather = createAsyncThunk<
-  any,
+  { current: CurrentWeather; daily: DailyWeather[]; hourly: HourlyWeather[] },
   void,
   {
     state: RootState;
@@ -33,7 +36,7 @@ export const fetchActiveWeather = createAsyncThunk<
   const coord = thunkapi.getState().weather.activeLocation;
   const [lat, lon] = coord.split('-');
   const results = await axios.get(
-    `${Endpoint}lat=${lat}&lon=${lon}&appid=${ApiKey}&units=metric`
+    `${Endpoint}lat=${lat}&lon=${lon}&appid=${ApiKey}&units=metric`,
   );
   const { current, daily, hourly } = results.data;
   return { current, daily, hourly };
@@ -43,16 +46,14 @@ export const weatherSlice = createSlice({
   name: 'weather',
   initialState,
   reducers: {
-    locationAdded(state, action) {
-      // weatherAdapter.addOne(state, action.payload);
-    },
+    locationAdded() {},
     locationUpdated(state, action) {
       state.activeLocation = action.payload;
     },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
-      .addCase(fetchActiveWeather.pending, state => {
+      .addCase(fetchActiveWeather.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchActiveWeather.rejected, (state, action) => {
@@ -61,9 +62,10 @@ export const weatherSlice = createSlice({
       })
       .addCase(fetchActiveWeather.fulfilled, (state, action) => {
         state.loading = false;
-        state.current = { ...action.payload.current };
-        state.hourly = { ...action.payload.hourly };
-        state.daily = { ...action.payload.daily };
+        const { current, hourly, daily } = action.payload;
+        state.current = { ...current };
+        state.hourly = { ...hourly };
+        state.daily = { ...daily };
       });
   },
 });
@@ -71,9 +73,3 @@ export const weatherSlice = createSlice({
 export const { locationAdded, locationUpdated } = weatherSlice.actions;
 
 export default weatherSlice.reducer;
-
-// export const {
-//   selectAll: selectAllLocation,
-//   selectById: selectLocationById,
-//   selectIds: selectLocationsIds,
-// } = weatherAdapter.getSelectors(state => state.weather);

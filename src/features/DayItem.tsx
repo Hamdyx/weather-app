@@ -1,14 +1,15 @@
 import { HStack, Grid, GridItem, Image } from '@chakra-ui/react';
-import { formatUnixDay } from '../util/util';
 
-function DayItem({ item }: any) {
-  const {
-    dt,
-    weather, // [{id, main, description, icon}]
-    temp, // {day, min, max, night, eve, morn}
-  } = item;
-  // item = { dt, sunrise, sunset, moonrise, moonset, moon_phase, temp, feels_like
-  //          pressure, dew_point, wind_speed, wind_deg, weather, clouds, uvi }
+import { formatUnixDay } from '../util/util';
+import type { DailyWeather } from './types';
+
+interface Props {
+  item: DailyWeather;
+}
+
+function DayItem({ item }: Props) {
+  const { dt, weather, temp } = item;
+
   const icon = `icons/${weather[0].icon}.png`;
   return (
     <Grid templateColumns="repeat(12, 1fr)" gap={6}>
@@ -22,7 +23,7 @@ function DayItem({ item }: any) {
           <p className="today-status">{weather[0].description}</p>
 
           <p className="day-forecast">{`${Math.round(temp.max)} / ${Math.round(
-            temp.min
+            temp.min,
           )}\u00b0`}</p>
         </HStack>
       </GridItem>

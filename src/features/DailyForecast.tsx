@@ -1,6 +1,8 @@
 import { useSelector } from 'react-redux';
 import { Box, Skeleton } from '@chakra-ui/react';
+
 import { RootState } from 'app/store';
+
 import DayItem from './DayItem';
 
 function DailyForecast() {
@@ -11,8 +13,8 @@ function DailyForecast() {
     content.push(v);
   }
 
-  content = content.map((item, i) => {
-    return <DayItem key={i} item={item} />;
+  content = content.map((item) => {
+    return <DayItem key={item.dt} item={item} />;
   });
 
   return (
