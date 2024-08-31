@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import React from 'react';
+import { VStack, HStack, Center, Heading, Box } from '@chakra-ui/react';
 
-import LocationsMain from '../../features/locations/LocationsMain.js';
+import LocationInput from './components/LocationInput';
 
 export const metadata: Metadata = {
   title: 'Locations',
@@ -11,7 +11,29 @@ export const metadata: Metadata = {
 function Locations() {
   return (
     <main>
-      <LocationsMain />
+      <Box w="100%" p={4}>
+        <HStack>
+          <Heading as="h3" size="md">
+            Managed cities
+          </Heading>
+        </HStack>
+        <VStack mt={4} spacing={4}>
+          locationContent
+        </VStack>
+      </Box>
+      <Center p={4}>
+        <VStack>
+          <HStack pt={8}>
+            <LocationInput label="city" type="text" />
+            <LocationInput label="state" type="text" />
+          </HStack>
+          <HStack>
+            <LocationInput label="latitude" type="number" />
+            <LocationInput label="longitude" type="number" />
+          </HStack>
+          <ul id="location-list"></ul>
+        </VStack>
+      </Center>
     </main>
   );
 }
