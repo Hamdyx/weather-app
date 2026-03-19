@@ -6,7 +6,7 @@ import {
   cookieStorageManagerSSR,
   localStorageManager,
 } from '@chakra-ui/react';
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from '@vercel/analytics/next';
 
 import { store } from './store';
 
