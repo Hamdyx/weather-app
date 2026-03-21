@@ -1,7 +1,7 @@
 import { Text, Box } from '@chakra-ui/react';
 
-import { HourlyWeather } from 'features/types';
-import { formatUnixTime } from 'util/util';
+import { HourlyWeather } from '@/features/types';
+import { formatUnixTime } from '@/util/util';
 
 interface Props {
   data: HourlyWeather;

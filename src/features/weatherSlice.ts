@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { RootState } from 'app/store';
+import { RootState } from '@/app/store';
 
 import type { CurrentWeather, DailyWeather, HourlyWeather } from './types';
 

@@ -1,5 +1,4 @@
-import React from 'react';
-import { FormControl, FormLabel, Input } from '@chakra-ui/react';
+import { Field, Input } from '@chakra-ui/react';
 
 interface Props {
   label: string;
@@ -8,10 +7,10 @@ interface Props {
 
 function LocationInput({ label, type }: Props) {
   return (
-    <FormControl>
-      <FormLabel htmlFor={label}>{label}</FormLabel>
+    <Field.Root>
+      <Field.Label>{label}</Field.Label>
       <Input id={label} type={type} />
-    </FormControl>
+    </Field.Root>
   );
 }
 

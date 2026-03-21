@@ -17,7 +17,7 @@ function Locations() {
             Managed cities
           </Heading>
         </HStack>
-        <VStack mt={4} spacing={4}>
+        <VStack mt={4} gap={4}>
           locationContent
         </VStack>
       </Box>

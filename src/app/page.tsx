@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import React, { StrictMode } from 'react';
+import { StrictMode } from 'react';
 
-import WeatherMain from 'features/WeatherMain';
+import WeatherMain from '@/features/WeatherMain';
 
 export const metadata: Metadata = {
   title: 'Weather App',

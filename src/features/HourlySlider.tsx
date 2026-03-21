@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { HStack, Box, Skeleton } from '@chakra-ui/react';
 
-import { RootState } from 'app/store';
+import { RootState } from '@/app/store';
 
 import HourlyItem from './components/HourlyItem';
 
@@ -27,10 +27,10 @@ function HourlySlider() {
   });
 
   return (
-    <Skeleton height="101px" isLoaded={hourlyArr.length > 0} fadeDuration={1}>
+    <Skeleton height="101px" loading={hourlyArr.length === 0}>
       <Box layerStyle="hourly">
         <HStack
-          spacing="8px"
+          gap="8px"
           justifyContent="center"
           className="hourly-slider"
           p={1}

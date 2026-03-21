@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { Flex, Spacer } from '@chakra-ui/react';
-import { useAppDispatch } from 'app/store';
+import { useAppDispatch } from '@/app/store';
 import { fetchActiveWeather } from './weatherSlice';
 import HourlySlider from './HourlySlider';
 import DailyForecast from './DailyForecast';

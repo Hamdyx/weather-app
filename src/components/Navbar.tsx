@@ -4,7 +4,7 @@ import { ColorModeSwitcher } from './ColorModeSwitcher';
 
 export default function Navbar() {
   return (
-    <HStack spacing={6} p={4} h={50}>
+    <HStack gap={6} p={4} h={50}>
       <Spacer />
       <ColorModeSwitcher />
     </HStack>

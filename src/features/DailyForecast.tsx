@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { Box, Skeleton } from '@chakra-ui/react';
 
-import { RootState } from 'app/store';
+import { RootState } from '@/app/store';
 
 import DayItem from './DayItem';
 
@@ -18,7 +18,7 @@ function DailyForecast() {
   });
 
   return (
-    <Skeleton height="420px" isLoaded={content.length > 0} fadeDuration={2}>
+    <Skeleton height="420px" loading={content.length === 0}>
       <Box layerStyle="hourly" className="days-forecast" p={4}>
         {content}
       </Box>

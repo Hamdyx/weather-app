@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
-import { HStack, DrawerBody, Spacer } from '@chakra-ui/react';
+import { HStack, Spacer } from '@chakra-ui/react';
 
-import { RootState } from 'app/store';
-import { formatUnixTime } from 'util/util';
+import { RootState } from '@/app/store';
+import { formatUnixTime } from '@/util/util';
 
 import DataStack from './DataStack';
 
@@ -21,7 +21,7 @@ function WeatherDrawerContent() {
   } = todayData?.[0] || {};
 
   return (
-    <DrawerBody>
+    <>
       <HStack>
         <DataStack
           className="sunrise-data"
@@ -70,7 +70,7 @@ function WeatherDrawerContent() {
           loading={loading}
         />
       </HStack>
-    </DrawerBody>
+    </>
   );
 }
 

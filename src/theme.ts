@@ -1,80 +1,55 @@
-import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
-import { mode } from '@chakra-ui/theme-tools';
-import type { StyleFunctionProps } from '@chakra-ui/styled-system';
+import { createSystem, defaultConfig, defineConfig } from '@chakra-ui/react';
 
-const config: ThemeConfig = {
-  initialColorMode: 'system',
-  useSystemColorMode: true,
-  cssVarPrefix: 'ck',
-};
-
-const styles = {
-  global: (props: StyleFunctionProps) => ({
+const config = defineConfig({
+  globalCss: {
     body: {
-      color: mode('black', 'blue.100')(props),
-      bg: mode('gray.200', 'blue.800')(props),
-    },
-    p: {
-      color: mode('black', 'blue.50')(props),
-    },
-  }),
-};
-
-const theme = extendTheme({
-  config,
-  styles,
-  layerStyles: {
-    hourly: {
-      bg: 'gray.50',
-      borderTop: '2px solid',
-      borderBottom: '2px solid',
-      borderColor: 'gray.500',
-    },
-    selected: {
-      bg: 'teal.500',
-      color: 'teal.700',
-      borderColor: 'orange.500',
+      colorPalette: 'blue',
     },
   },
-  colors: {
-    transparent: 'transparent',
-    black: '#000',
-    white: '#fff',
-
-    gray: {
-      50: '#0b1d354d',
-      // ...
-      900: '#171923',
-    },
-
-    blue: {
-      50: '#eaeef3',
-    },
-
-    components: {
-      Text: {
-        color: mode('whiteAlpha.900', 'gray.900'),
+  theme: {
+    tokens: {
+      colors: {
+        blue: {
+          50: { value: '#eaeef3' },
+        },
+        gray: {
+          50: { value: '#0b1d354d' },
+          900: { value: '#171923' },
+        },
       },
-      Box: {
-        variants: {
-          outline: {
-            border: '2px solid',
-            borderColor: 'purple.500',
-            color: 'purple.500',
-          },
-          solid: {
-            bg: 'purple.500',
-            color: 'white',
+    },
+    semanticTokens: {
+      colors: {
+        bg: {
+          DEFAULT: {
+            value: { _light: '{colors.gray.200}', _dark: '{colors.blue.800}' },
           },
         },
-        // The default size and variant values
-        defaultProps: {
-          size: 'md',
-          variant: 'outline',
+        fg: {
+          DEFAULT: {
+            value: { _light: '{colors.black}', _dark: '{colors.blue.50}' },
+          },
+        },
+      },
+    },
+    layerStyles: {
+      hourly: {
+        value: {
+          bg: '{colors.gray.50}',
+          borderTop: '2px solid',
+          borderBottom: '2px solid',
+          borderColor: '{colors.gray.500}',
+        },
+      },
+      selected: {
+        value: {
+          bg: '{colors.teal.500}',
+          color: '{colors.teal.700}',
+          borderColor: '{colors.orange.500}',
         },
       },
     },
   },
 });
 
-export default theme;
+export const system = createSystem(defaultConfig, config);
