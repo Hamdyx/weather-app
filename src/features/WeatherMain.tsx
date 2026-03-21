@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { Flex, Spacer } from '@chakra-ui/react';
 import { useAppDispatch } from '@/app/store';
-import { fetchActiveWeather } from './weatherSlice';
+import { fetchActiveWeather, fetchForecast } from './weatherSlice';
 import HourlySlider from './HourlySlider';
 import DailyForecast from './DailyForecast';
 import WeatherSub from './WeatherSub';
@@ -14,6 +14,7 @@ function WeatherMain() {
 
   useEffect(() => {
     dispatch(fetchActiveWeather());
+    dispatch(fetchForecast());
   }, [dispatch]);
 
   return (

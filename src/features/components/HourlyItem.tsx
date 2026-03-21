@@ -1,15 +1,16 @@
 import { Text, Box } from '@chakra-ui/react';
 
-import { HourlyWeather } from '@/features/types';
+import { ForecastWeather } from '@/features/types';
 import { formatUnixTime } from '@/util/util';
 
 interface Props {
-  data: HourlyWeather;
+  data: ForecastWeather;
 }
 
 function HourlyItem({ data }: Props) {
-  const { dt, temp, weather } = data;
+  const { dt, main, weather } = data;
   const cloudIcon = `icons/${weather[0].icon}.png`;
+
   return (
     <Box flex={1} h="75%">
       <Text className="hourly-time" fontSize=".75rem">
@@ -23,7 +24,7 @@ function HourlyItem({ data }: Props) {
         className="hourly-icon"
       />
       <Text className="hourly-data" mt="-.5rem">{`${Math.round(
-        temp,
+        main.temp,
       )}\u00b0`}</Text>
     </Box>
   );

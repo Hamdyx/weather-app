@@ -7,18 +7,18 @@ import { formatUnixTime } from '@/util/util';
 import DataStack from './DataStack';
 
 function WeatherDrawerContent() {
-  const { daily: todayData, loading } = useSelector(
+  const { location, loading } = useSelector(
     (state: RootState) => state.weather,
   );
 
   const {
     sunrise = 0,
     sunset = 0,
-    moonrise = 0,
-    moonset = 0,
-    uvi = 0,
-    moon_phase = 0,
-  } = todayData?.[0] || {};
+    // moonrise = 0,
+    // moonset = 0,
+    // uvi = 0,
+    // moon_phase = 0,
+  } = location || {};
 
   return (
     <>
@@ -39,7 +39,7 @@ function WeatherDrawerContent() {
         />
       </HStack>
 
-      <HStack mt={2}>
+      {/* <HStack mt={2}>
         <DataStack
           className="moonrise-data"
           title={'Moonrise'}
@@ -53,9 +53,9 @@ function WeatherDrawerContent() {
           value={formatUnixTime(moonset)}
           loading={loading}
         />
-      </HStack>
+      </HStack> */}
 
-      <HStack mt={2}>
+      {/* <HStack mt={2}>
         <DataStack
           className="moonphase-data"
           title={'Moon Phase'}
@@ -69,7 +69,7 @@ function WeatherDrawerContent() {
           value={uvi}
           loading={loading}
         />
-      </HStack>
+      </HStack> */}
     </>
   );
 }

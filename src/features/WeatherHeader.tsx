@@ -16,21 +16,13 @@ import { fetchActiveWeather } from './weatherSlice';
 import { toaster } from '../components/ui/toaster';
 
 function WeatherHeader() {
-  const { current: currentWeather, loading } = useSelector(
+  const { main, weather, visibility, wind, clouds, loading } = useSelector(
     (state: RootState) => state.weather,
   );
   const dispatch = useAppDispatch();
 
-  const {
-    temp = 0,
-    feels_like = 0,
-    wind_speed = 0,
-    visibility = 0,
-    pressure = 0,
-    humidity = 0,
-    dew_point = 0,
-    weather,
-  } = currentWeather || {};
+  const { temp = 0, feels_like = 0, pressure = 0, humidity = 0 } = main || {};
+  const { speed = 0 } = wind || {};
 
   const cloudIcon = weather ? `icons/${weather[0].icon}.png` : `icons/11n.png`;
 
@@ -89,7 +81,7 @@ function WeatherHeader() {
           <Heading as="h3" size="xs">
             Wind
             <Skeleton loading={loading}>
-              {`${formatSpeedMtoKm(wind_speed)} km/h`}
+              {`${formatSpeedMtoKm(speed)} km/h`}
             </Skeleton>
           </Heading>
           <Heading as="h3" size="xs">
@@ -112,9 +104,9 @@ function WeatherHeader() {
             <Skeleton loading={loading}>{`${Math.round(humidity)}%`}</Skeleton>
           </Heading>
           <Heading as="h3" size="xs">
-            Dew Point
+            Clouds
             <Skeleton loading={loading}>
-              {`${Math.round(dew_point)}\u00b0`}
+              {`${Math.round(clouds || 0)}%`}
             </Skeleton>
           </Heading>
         </HStack>

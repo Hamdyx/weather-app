@@ -8,26 +8,12 @@ import HourlyItem from './components/HourlyItem';
 function HourlySlider() {
   const allHoursData = useSelector((state: RootState) => state.weather.hourly);
 
-  const hourlyArr = [];
-  for (const [k, v] of Object.entries(allHoursData)) {
-    if (+k < 1) {
-      // skip first hour as it's the current hour
-      continue;
-    }
-    if (+k > 5) {
-      // get only 5 items
-      break;
-    }
-    // add the hour forecast data to the array
-    hourlyArr.push(v);
-  }
-
-  const hourlyItems = hourlyArr.map((el) => {
+  const hourlyItems = allHoursData.slice(0, 5).map((el) => {
     return <HourlyItem key={el.dt} data={el} />;
   });
 
   return (
-    <Skeleton height="101px" loading={hourlyArr.length === 0}>
+    <Skeleton height="101px" loading={allHoursData.length === 0}>
       <Box layerStyle="hourly">
         <HStack
           gap="8px"
