@@ -1,7 +1,7 @@
+import dayjs from 'dayjs';
 import { Text, Box } from '@chakra-ui/react';
 
 import { ForecastWeather } from '@/features/types';
-import { formatUnixTime } from '@/util/util';
 
 interface Props {
   data: ForecastWeather;
@@ -14,7 +14,7 @@ function HourlyItem({ data }: Props) {
   return (
     <Box flex={1} h="75%">
       <Text className="hourly-time" fontSize=".75rem">
-        {formatUnixTime(dt)}
+        {dayjs.unix(dt).format('h A')}
       </Text>
       <img
         src={cloudIcon}

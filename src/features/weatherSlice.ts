@@ -4,6 +4,7 @@ import axios from 'axios';
 import { RootState } from '@/app/store';
 
 import type {
+  DailyForecastItem,
   ForecastWeather,
   Location,
   MainWeather,
@@ -24,6 +25,7 @@ type SliceState = {
   rain?: number;
   clouds?: number;
   hourly: ForecastWeather[];
+  daily: DailyForecastItem[];
   location: Location | null;
   loading: boolean;
   error: string | undefined;
@@ -38,6 +40,7 @@ const initialState: SliceState = {
   rain: 0,
   clouds: 0,
   hourly: [],
+  daily: [],
   location: null,
   loading: false,
   error: undefined,
@@ -78,6 +81,7 @@ export const fetchActiveWeather = createAsyncThunk<
 export const fetchForecast = createAsyncThunk<
   {
     list: ForecastWeather[];
+    daily: DailyForecastItem[];
   },
   void,
   {
@@ -90,11 +94,44 @@ export const fetchForecast = createAsyncThunk<
     `${ForecastEndpoint}?lat=${lat}&lon=${lon}&appid=${ApiKey}&units=metric`,
   );
 
-  const { list } = results.data;
+  const { list } = results.data as { list: ForecastWeather[] };
 
-  return {
-    list,
-  };
+  // Group forecast items by day and compute min/max temps
+  const grouped = new Map<
+    string,
+    { items: ForecastWeather[]; min: number; max: number }
+  >();
+
+  for (const item of list) {
+    const day = item.dt_txt.split(' ')[0];
+    const entry = grouped.get(day);
+    if (entry) {
+      entry.items.push(item);
+      entry.min = Math.min(entry.min, item.main.temp_min);
+      entry.max = Math.max(entry.max, item.main.temp_max);
+    } else {
+      grouped.set(day, {
+        items: [item],
+        min: item.main.temp_min,
+        max: item.main.temp_max,
+      });
+    }
+  }
+
+  const daily: DailyForecastItem[] = Array.from(grouped.values()).map(
+    ({ items, min, max }) => {
+      // Pick the midday entry (closest to 12:00) as representative weather
+      const midday =
+        items.find((i) => i.dt_txt.includes('12:00:00')) ?? items[0];
+      return {
+        dt: midday.dt,
+        weather: midday.weather,
+        temp: { min, max },
+      };
+    },
+  );
+
+  return { list, daily };
 });
 
 export const weatherSlice = createSlice({
@@ -135,8 +172,9 @@ export const weatherSlice = createSlice({
       })
       .addCase(fetchForecast.fulfilled, (state, action) => {
         state.loading = false;
-        const { list } = action.payload;
+        const { list, daily } = action.payload;
         state.hourly = [...list];
+        state.daily = [...daily];
       });
   },
 });

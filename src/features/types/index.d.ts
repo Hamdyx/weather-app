@@ -1,10 +1,3 @@
-export interface Temperature {
-  day: number;
-  night: number;
-  eve: number;
-  morn: number;
-}
-
 export interface Location {
   type: number;
   id: number;
@@ -42,25 +35,10 @@ export interface Cloud {
   all: number;
 }
 
-export interface BaseWeather {
+export interface DailyForecastItem {
   dt: number;
-  pressure: number;
-  humidity: number;
-  dew_point: number;
-  clouds: number;
   weather: WeatherCondition[];
-}
-
-export interface DailyWeather extends Wind, BaseWeather {
-  sunrise: number;
-  sunset: number;
-  moonrise: number;
-  moonset: number;
-  moon_phase: number;
-  temp: Temperature & { min: number; max: number };
-  feels_like: Temperature;
-  pop: number;
-  uvi: number;
+  temp: { min: number; max: number };
 }
 
 export interface ForecastWeather {

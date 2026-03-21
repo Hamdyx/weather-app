@@ -50,7 +50,7 @@ function WeatherHeader() {
           <Heading as="h1" size="lg">
             Cairo, EG
           </Heading>
-          <Button onClick={updateWeather}>
+          <Button onClick={updateWeather} variant="plain" size="sm">
             {loading ? <Spinner size="sm" /> : <LuRefreshCw />}
           </Button>
         </HStack>
