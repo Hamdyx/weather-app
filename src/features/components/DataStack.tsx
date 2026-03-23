@@ -11,7 +11,7 @@ function DataStack({ className, value, title, loading }: Props) {
   return (
     <VStack>
       <Text fontSize="md">{title}</Text>
-      <Skeleton isLoaded={!loading} fadeDuration={2}>
+      <Skeleton loading={loading}>
         <Text fontSize="md" className={className}>
           {value}
         </Text>

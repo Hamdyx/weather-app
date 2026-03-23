@@ -1,27 +1,24 @@
 'use client';
 
-import { Provider } from 'react-redux';
-import {
-  ChakraProvider,
-  cookieStorageManagerSSR,
-  localStorageManager,
-} from '@chakra-ui/react';
-import { Analytics } from '@vercel/analytics/react';
+import { ChakraProvider } from '@chakra-ui/react';
+import { Analytics } from '@vercel/analytics/next';
+import { Provider as ReduxProvider } from 'react-redux';
 
 import { store } from './store';
-
-import theme from '../theme';
+import { ColorModeProvider } from '../components/ui/color-mode';
+import { Toaster } from '../components/ui/toaster';
+import { system } from '../theme';
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const colorModeManager =
-    cookieStorageManagerSSR('chakra-ui-color-mode') ?? localStorageManager;
-
   return (
-    <Provider store={store}>
-      <ChakraProvider theme={theme} colorModeManager={colorModeManager}>
-        {children}
+    <ReduxProvider store={store}>
+      <ChakraProvider value={system}>
+        <ColorModeProvider>
+          {children}
+          <Toaster />
+        </ColorModeProvider>
       </ChakraProvider>
       <Analytics />
-    </Provider>
+    </ReduxProvider>
   );
 }
