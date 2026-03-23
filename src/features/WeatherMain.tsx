@@ -1,17 +1,22 @@
-import { useEffect } from 'react';
+'use client';
+
 import { Flex, Spacer } from '@chakra-ui/react';
-import { useAppDispatch } from 'app/store';
-import { fetchActiveWeather } from './weatherSlice';
-import HourlySlider from './HourlySlider';
+import { useEffect } from 'react';
+
+import { useAppDispatch } from '@/app/store';
+
 import DailyForecast from './DailyForecast';
-import WeatherSub from './WeatherSub';
+import HourlySlider from './HourlySlider';
 import WeatherHeader from './WeatherHeader';
+import { fetchActiveWeather, fetchForecast } from './weatherSlice';
+import WeatherSub from './WeatherSub';
 
 function WeatherMain() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchActiveWeather());
+    dispatch(fetchForecast());
   }, [dispatch]);
 
   return (

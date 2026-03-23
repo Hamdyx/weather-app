@@ -1,99 +1,36 @@
-import { useSelector } from 'react-redux';
-import {
-  VStack,
-  HStack,
-  Drawer,
-  DrawerBody,
-  Text,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  Button,
-  useDisclosure,
-  Spacer,
-} from '@chakra-ui/react';
+'use client';
 
-import { formatUnixTime } from '../util/util';
-import { RootState } from 'app/store';
+import { Drawer, Button } from '@chakra-ui/react';
+import { useState } from 'react';
+
+import WeatherDrawerContent from './components/WeatherDrawerContent';
 
 function WeatherSub() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const todayData = useSelector((state: RootState) => state.weather.daily[0]);
-  let content;
-
-  if (todayData) {
-    const { sunrise, sunset, moonrise, moonset, uvi, moon_phase } = todayData;
-    content = (
-      <DrawerBody>
-        <HStack>
-          <DataStack
-            className="sunrise-data"
-            title={'Sunrise'}
-            value={formatUnixTime(sunrise)}
-          />
-          <Spacer />
-
-          <DataStack
-            className="sunset-data"
-            title={'Sunset'}
-            value={formatUnixTime(sunset)}
-          />
-        </HStack>
-
-        <HStack mt={2}>
-          <DataStack
-            className="moonrise-data"
-            title={'Moonrise'}
-            value={formatUnixTime(moonrise)}
-          />
-          <Spacer />
-          <DataStack
-            className="moonset-data"
-            title={'Moonset'}
-            value={formatUnixTime(moonset)}
-          />
-        </HStack>
-
-        <HStack mt={2}>
-          <DataStack
-            className="moonphase-data"
-            title={'Moon Phase'}
-            value={moon_phase}
-          />
-          <Spacer />
-          <DataStack className="uv-data" title={'UV Index'} value={uvi} />
-        </HStack>
-      </DrawerBody>
-    );
-  } else {
-    content = <DrawerBody>Loading</DrawerBody>;
-  }
+  const [open, setOpen] = useState(false);
 
   return (
     <>
-      <Button colorScheme="blue" onClick={onOpen} m="auto 0">
+      <Button colorPalette="blue" onClick={() => setOpen(true)} m="auto 0">
         Details
       </Button>
-      <Drawer onClose={onClose} isOpen={isOpen} size={'xs'}>
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader borderBottomWidth="1px">Day Details</DrawerHeader>
-          {content}
-        </DrawerContent>
-      </Drawer>
+      <Drawer.Root
+        open={open}
+        onOpenChange={(e: { open: boolean }) => setOpen(e.open)}
+        size="xs"
+      >
+        <Drawer.Backdrop />
+        <Drawer.Positioner>
+          <Drawer.Content>
+            <Drawer.Header borderBottomWidth="1px">Day Details</Drawer.Header>
+            <Drawer.Body>
+              <WeatherDrawerContent />
+            </Drawer.Body>
+            <Drawer.CloseTrigger />
+          </Drawer.Content>
+        </Drawer.Positioner>
+      </Drawer.Root>
     </>
   );
 }
 
 export default WeatherSub;
-
-function DataStack({ className, value, title }: any) {
-  return (
-    <VStack>
-      <Text fontSize="md">{title}</Text>
-      <Text fontSize="md" className={className}>
-        {value}
-      </Text>
-    </VStack>
-  );
-}
