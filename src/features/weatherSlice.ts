@@ -1,8 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-
-import { RootState } from '@/app/store';
-
+import type { RootState } from '@/app/store';
 import type {
   DailyForecastItem,
   ForecastWeather,
@@ -11,6 +7,10 @@ import type {
   WeatherCondition,
   Wind,
 } from './types';
+
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+
 
 const ApiKey = process.env.NEXT_PUBLIC_API_KEY;
 const WeatherEndpoint = process.env.NEXT_PUBLIC_WEATHER_API_URL;

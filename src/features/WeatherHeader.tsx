@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux';
 import {
   Center,
   VStack,
@@ -8,12 +7,16 @@ import {
   Skeleton,
   Button,
   Spinner,
+  Image,
 } from '@chakra-ui/react';
 import { LuRefreshCw } from 'react-icons/lu';
+import { useSelector } from 'react-redux';
+
 import { RootState, useAppDispatch } from '@/app/store';
-import { formatMtoKm, formatSpeedMtoKm } from '../util/util';
+
 import { fetchActiveWeather } from './weatherSlice';
 import { toaster } from '../components/ui/toaster';
+import { formatMtoKm, formatSpeedMtoKm } from '../util/util';
 
 function WeatherHeader() {
   const { main, weather, visibility, wind, clouds, loading } = useSelector(
@@ -56,7 +59,7 @@ function WeatherHeader() {
         </HStack>
         <HStack>
           <Skeleton loading={loading}>
-            <img
+            <Image
               src={cloudIcon}
               alt={`${'icon'}`}
               width={65}

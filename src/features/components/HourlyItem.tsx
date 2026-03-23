@@ -1,5 +1,5 @@
+import { Text, Box, Image } from '@chakra-ui/react';
 import dayjs from 'dayjs';
-import { Text, Box } from '@chakra-ui/react';
 
 import { ForecastWeather } from '@/features/types';
 
@@ -16,7 +16,7 @@ function HourlyItem({ data }: Props) {
       <Text className="hourly-time" fontSize=".75rem">
         {dayjs.unix(dt).format('h A')}
       </Text>
-      <img
+      <Image
         src={cloudIcon}
         alt={`${weather[0].description}`}
         width={50}

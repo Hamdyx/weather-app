@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import { Drawer, Button } from '@chakra-ui/react';
+import { useState } from 'react';
 
 import WeatherDrawerContent from './components/WeatherDrawerContent';
 

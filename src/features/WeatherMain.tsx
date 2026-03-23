@@ -1,13 +1,15 @@
 'use client';
 
-import { useEffect } from 'react';
 import { Flex, Spacer } from '@chakra-ui/react';
+import { useEffect } from 'react';
+
 import { useAppDispatch } from '@/app/store';
-import { fetchActiveWeather, fetchForecast } from './weatherSlice';
-import HourlySlider from './HourlySlider';
+
 import DailyForecast from './DailyForecast';
-import WeatherSub from './WeatherSub';
+import HourlySlider from './HourlySlider';
 import WeatherHeader from './WeatherHeader';
+import { fetchActiveWeather, fetchForecast } from './weatherSlice';
+import WeatherSub from './WeatherSub';
 
 function WeatherMain() {
   const dispatch = useAppDispatch();

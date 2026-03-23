@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+
 import { VStack, HStack, Center, Heading, Box } from '@chakra-ui/react';
 
 import LocationInput from './components/LocationInput';

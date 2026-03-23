@@ -1,5 +1,5 @@
-import { useSelector } from 'react-redux';
 import { Box, Skeleton } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
 
 import { RootState } from '@/app/store';
 

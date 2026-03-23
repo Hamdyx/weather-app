@@ -1,8 +1,9 @@
 'use client';
 
+import type { ThemeProviderProps } from 'next-themes';
+
 import { ClientOnly, IconButton, Skeleton } from '@chakra-ui/react';
 import { ThemeProvider, useTheme } from 'next-themes';
-import type { ThemeProviderProps } from 'next-themes';
 import { LuMoon, LuSun } from 'react-icons/lu';
 
 export function ColorModeProvider(props: ThemeProviderProps) {

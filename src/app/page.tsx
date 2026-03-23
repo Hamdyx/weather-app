@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+
 import { StrictMode } from 'react';
 
 import WeatherMain from '@/features/WeatherMain';
