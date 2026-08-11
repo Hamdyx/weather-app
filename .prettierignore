@@ -1,0 +1,4 @@
+build/
+.next/
+package-lock.json
+public/

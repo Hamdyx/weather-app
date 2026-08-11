@@ -11,7 +11,6 @@ import type {
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-
 const ApiKey = process.env.NEXT_PUBLIC_API_KEY;
 const WeatherEndpoint = process.env.NEXT_PUBLIC_WEATHER_API_URL;
 const ForecastEndpoint = process.env.NEXT_PUBLIC_FORECAST_API_URL;
