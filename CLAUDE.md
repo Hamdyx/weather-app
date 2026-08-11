@@ -21,7 +21,7 @@ Type-check with `npx tsc --noEmit` (no dedicated script).
 
 ## Environment variables
 
-Copy `.env.example` to `.env`. The code reads exactly three variables (see `src/features/weatherSlice.ts`):
+Copy `.env.example` to `.env`. The code reads exactly three variables (see `src/features/weather/weatherSlice.ts`):
 
 - `NEXT_PUBLIC_WEATHER_API_URL` — OpenWeatherMap `/data/2.5/weather` endpoint
 - `NEXT_PUBLIC_FORECAST_API_URL` — OpenWeatherMap `/data/2.5/forecast` endpoint
@@ -32,13 +32,15 @@ Copy `.env.example` to `.env`. The code reads exactly three variables (see `src/
 - **TypeScript only** for source files — `.js`/`.jsx` sources are an ESLint error.
 - **Import ordering** (blank line between groups, alphabetized): type imports first (`import type { X }`, top-level style), then builtin/external packages, then `@/*` internal imports, then local relative imports.
 - **Path alias**: `@/*` → `src/*` (see `tsconfig.json`). No file extensions in imports.
+- **`'use client'`**: add the directive explicitly to every component that uses hooks (`useState`, `useEffect`, `useSelector`, etc.), rather than relying on it being inherited transitively from a parent that happens to already have it.
 
 ## Architecture
 
-- `src/app/` — App Router routes, Redux store (`store.ts`), providers (`providers.tsx`), layout, global CSS
+- `src/app/` — App Router routes, providers (`providers.tsx`), layout, global CSS
   - `src/app/locations/` — **intentional scaffolding** for a future multi-location feature. Do not delete as "dead code".
-- `src/features/` — weather feature: `weatherSlice.ts` (Redux Toolkit slice + async thunks), weather components, `types/`
-- `src/components/` — shared chrome (Navbar, Layout, ColorModeSwitcher) and `ui/` Chakra UI primitives
+- `src/store.ts` — Redux store
+- `src/features/weather/` — weather feature: `weatherSlice.ts` (Redux Toolkit slice + async thunks), `weatherApi.ts` (fetch layer), `types.ts`, `components/` (WeatherMain, WeatherHeader, WeatherSub, DailyForecast, HourlySlider, DayItem, HourlyItem, DataStack, WeatherDrawerContent)
+- `src/components/` — shared chrome (Navbar, Layout) and `ui/` Chakra UI primitives
 - `src/util/` — utilities
 - `src/theme.ts` — Chakra theme
 

@@ -3,7 +3,7 @@
 import { Drawer, Button } from '@chakra-ui/react';
 import { useState } from 'react';
 
-import WeatherDrawerContent from './components/WeatherDrawerContent';
+import WeatherDrawerContent from './WeatherDrawerContent';
 
 function WeatherSub() {
   const [open, setOpen] = useState(false);

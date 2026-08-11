@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Center,
   VStack,
@@ -12,11 +14,11 @@ import {
 import { RefreshCw } from 'lucide-react';
 import { useEffect } from 'react';
 
-import { useAppDispatch, useAppSelector } from '@/app/store';
+import { toaster } from '@/components/ui/toaster';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { formatMtoKm, formatSpeedMtoKm } from '@/util/util';
 
-import { fetchActiveWeather, fetchForecast } from './weatherSlice';
-import { toaster } from '../components/ui/toaster';
-import { formatMtoKm, formatSpeedMtoKm } from '../util/util';
+import { fetchActiveWeather, fetchForecast } from '../weatherSlice';
 
 function WeatherHeader() {
   const main = useAppSelector((state) => state.weather.main);

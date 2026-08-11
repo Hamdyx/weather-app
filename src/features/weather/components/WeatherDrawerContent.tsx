@@ -1,7 +1,9 @@
+'use client';
+
 import { HStack, Spacer } from '@chakra-ui/react';
 import dayjs from 'dayjs';
 
-import { useAppSelector } from '@/app/store';
+import { useAppSelector } from '@/store';
 
 import DataStack from './DataStack';
 

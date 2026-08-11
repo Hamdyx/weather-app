@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 
-import weatherReducer from '../features/weatherSlice';
+import weatherReducer from './features/weather/weatherSlice';
 
 const reducer = {
   weather: weatherReducer,

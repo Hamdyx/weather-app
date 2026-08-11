@@ -1,8 +1,10 @@
+'use client';
+
 import { HStack, Box, Skeleton } from '@chakra-ui/react';
 
-import { useAppSelector } from '@/app/store';
+import { useAppSelector } from '@/store';
 
-import HourlyItem from './components/HourlyItem';
+import HourlyItem from './HourlyItem';
 
 function HourlySlider() {
   const allHoursData = useAppSelector((state) => state.weather.hourly);

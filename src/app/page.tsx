@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
-import { StrictMode } from 'react';
+import { Box } from '@chakra-ui/react';
 
-import WeatherMain from '@/features/WeatherMain';
+import WeatherMain from '@/features/weather/components/WeatherMain';
 
 export const metadata: Metadata = {
   title: 'Weather App',
@@ -11,13 +11,9 @@ export const metadata: Metadata = {
 
 function HomePage() {
   return (
-    <main>
-      <div id="root">
-        <StrictMode>
-          <WeatherMain />
-        </StrictMode>
-      </div>
-    </main>
+    <Box as="main" display="flex" flex={1}>
+      <WeatherMain />
+    </Box>
   );
 }
 
