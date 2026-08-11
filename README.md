@@ -1,68 +1,30 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Weather App
 
-## Available Scripts
+A weather dashboard that shows current conditions, an hourly slider, and a daily forecast for a searched location, powered by the [OpenWeatherMap API](https://openweathermap.org/api). Built as a statically exported Next.js SPA with React 19, Chakra UI v3, and Redux Toolkit.
 
-In the project directory, you can run:
+## Prerequisites
 
-### `npm start`
+- Node.js ≥ 20.9
+- An OpenWeatherMap API key — sign up at [openweathermap.org](https://home.openweathermap.org/api_keys) (the free tier is enough)
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Setup
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+```sh
+npm install
+cp .env.example .env
+# then put your OpenWeatherMap API key in .env as NEXT_PUBLIC_API_KEY
+```
 
-### `npm test`
+## Commands
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+| Command            | What it does                                              |
+| ------------------ | --------------------------------------------------------- |
+| `npm run dev`      | Dev server at http://localhost:3000                       |
+| `npm run build`    | Production build — static export into `./build`           |
+| `npm start`        | Serves an existing `./build` locally (build first)        |
+| `npm run lint`     | ESLint                                                    |
+| `npm run lint:fix` | ESLint with autofix                                       |
 
-### `npm run build`
+## Deployment
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+The app deploys to [Vercel](https://vercel.com). It is a pure static export (`output: 'export'`) — `npm run build` writes the site to `./build` and there is no server runtime. `npm start` is only a local preview of that folder; Vercel serves the exported build directly. Environment variables are baked in at build time, so set the `NEXT_PUBLIC_*` vars in the Vercel project settings.
