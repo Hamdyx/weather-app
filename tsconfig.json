@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -34,5 +34,5 @@
     ".next/dev/types/**/*.ts",
     "build/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "build"]
+  "exclude": ["node_modules"]
 }
