@@ -8,14 +8,8 @@ const config = defineConfig({
   },
   theme: {
     tokens: {
-      colors: {
-        blue: {
-          50: { value: '#eaeef3' },
-        },
-        gray: {
-          50: { value: '#0b1d354d' },
-          900: { value: '#171923' },
-        },
+      sizes: {
+        navbarHeight: { value: '50px' },
       },
     },
     semanticTokens: {
@@ -30,12 +24,17 @@ const config = defineConfig({
             value: { _light: '{colors.black}', _dark: '{colors.blue.50}' },
           },
         },
+        surface: {
+          translucent: {
+            value: { _light: '{colors.gray.100}', _dark: '#0b1d354d' },
+          },
+        },
       },
     },
     layerStyles: {
       hourly: {
         value: {
-          bg: '{colors.gray.50}',
+          bg: 'surface.translucent',
           borderTop: '2px solid',
           borderBottom: '2px solid',
           borderColor: '{colors.gray.500}',

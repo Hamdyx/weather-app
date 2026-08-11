@@ -4,7 +4,7 @@ import { ColorModeButton } from './ui/color-mode';
 
 export default function Navbar() {
   return (
-    <HStack gap={6} p={4} h={50}>
+    <HStack gap={6} p={4} h="navbarHeight">
       <Spacer />
       <ColorModeButton />
     </HStack>

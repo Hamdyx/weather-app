@@ -16,9 +16,11 @@ import { useEffect } from 'react';
 
 import { toaster } from '@/components/ui/toaster';
 import { useAppDispatch, useAppSelector } from '@/store';
-import { formatMtoKm, formatSpeedMtoKm } from '@/util/util';
+import { formatMpsToKmh, formatMtoKm } from '@/util/format';
 
+import { weatherIconPath } from '../icons';
 import { fetchActiveWeather, fetchForecast } from '../weatherSlice';
+import DataStack from './DataStack';
 
 function WeatherHeader() {
   const main = useAppSelector((state) => state.weather.main);
@@ -45,9 +47,7 @@ function WeatherHeader() {
   const { temp = 0, feels_like = 0, pressure = 0, humidity = 0 } = main || {};
   const { speed = 0 } = wind || {};
 
-  const cloudIcon = weather?.[0]
-    ? `icons/${weather[0].icon}.png`
-    : `icons/11n.png`;
+  const cloudIcon = weatherIconPath(weather?.[0]?.icon);
 
   // A pending request always passes through 'loading' first, so entering
   // 'failed' changes these deps and the toast fires once per failure.
@@ -84,7 +84,12 @@ function WeatherHeader() {
           <Heading as="h1" size="lg">
             {locationName}
           </Heading>
-          <Button onClick={updateWeather} variant="plain" size="sm">
+          <Button
+            onClick={updateWeather}
+            variant="plain"
+            size="sm"
+            aria-label="Refresh weather"
+          >
             {refreshing ? <Spinner size="sm" /> : <RefreshCw />}
           </Button>
         </HStack>
@@ -92,7 +97,7 @@ function WeatherHeader() {
           <Skeleton loading={loading}>
             <Image
               src={cloudIcon}
-              alt={`${'icon'}`}
+              alt={weather?.[0]?.description ?? ''}
               width={65}
               height={65}
               className="curr-icon"
@@ -105,44 +110,46 @@ function WeatherHeader() {
           </Skeleton>
         </HStack>
         <Spacer />
-        <HStack gap={['1rem', '2rem']} className="curr_weather">
-          <Heading as="h3" size="xs">
-            Feels like
-            <Skeleton loading={loading}>
-              {`${Math.round(feels_like)}\u00b0`}
-            </Skeleton>
-          </Heading>
-          <Heading as="h3" size="xs">
-            Wind
-            <Skeleton loading={loading}>
-              {`${formatSpeedMtoKm(speed)} km/h`}
-            </Skeleton>
-          </Heading>
-          <Heading as="h3" size="xs">
-            Visibility
-            <Skeleton loading={loading}>
-              {`${formatMtoKm(visibility)} km`}
-            </Skeleton>
-          </Heading>
+        <HStack gap={['1rem', '2rem']}>
+          <DataStack
+            className="feels-like-data"
+            title="Feels like"
+            value={`${Math.round(feels_like)}\u00b0`}
+            loading={loading}
+          />
+          <DataStack
+            className="wind-data"
+            title="Wind"
+            value={`${formatMpsToKmh(speed)} km/h`}
+            loading={loading}
+          />
+          <DataStack
+            className="visibility-data"
+            title="Visibility"
+            value={`${formatMtoKm(visibility)} km`}
+            loading={loading}
+          />
         </HStack>
         <Spacer />
-        <HStack gap={['.75rem', '2rem']} className="curr_weather">
-          <Heading as="h3" size="xs">
-            Pressure
-            <Skeleton loading={loading}>
-              {`${Math.round(pressure)} mb`}
-            </Skeleton>
-          </Heading>
-          <Heading as="h3" size="xs">
-            Humidity
-            <Skeleton loading={loading}>{`${Math.round(humidity)}%`}</Skeleton>
-          </Heading>
-          <Heading as="h3" size="xs">
-            Clouds
-            <Skeleton loading={loading}>
-              {`${Math.round(clouds ?? 0)}%`}
-            </Skeleton>
-          </Heading>
+        <HStack gap={['.75rem', '2rem']}>
+          <DataStack
+            className="pressure-data"
+            title="Pressure"
+            value={`${Math.round(pressure)} mb`}
+            loading={loading}
+          />
+          <DataStack
+            className="humidity-data"
+            title="Humidity"
+            value={`${Math.round(humidity)}%`}
+            loading={loading}
+          />
+          <DataStack
+            className="clouds-data"
+            title="Clouds"
+            value={`${Math.round(clouds ?? 0)}%`}
+            loading={loading}
+          />
         </HStack>
       </VStack>
     </Center>

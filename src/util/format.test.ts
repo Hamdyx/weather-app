@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { formatMtoKm, formatSpeedMtoKm, formatUnixDay } from './util';
+import { formatMpsToKmh, formatMtoKm, formatUnixDay } from './format';
 
 describe('formatUnixDay', () => {
   beforeEach(() => {
@@ -32,17 +32,17 @@ describe('formatUnixDay', () => {
 });
 
 describe('formatMtoKm', () => {
-  it('converts meters to kilometers with two decimal places', () => {
-    expect(formatMtoKm(5000)).toBe('5.00');
-    expect(formatMtoKm(1500)).toBe('1.50');
-    expect(formatMtoKm(10000)).toBe('10.00');
+  it('converts meters to kilometers with one decimal place', () => {
+    expect(formatMtoKm(5000)).toBe('5.0');
+    expect(formatMtoKm(1500)).toBe('1.5');
+    expect(formatMtoKm(10000)).toBe('10.0');
   });
 });
 
-describe('formatSpeedMtoKm', () => {
-  it('converts meters per second to kilometers per hour with two decimal places', () => {
-    expect(formatSpeedMtoKm(5)).toBe('18.00');
-    expect(formatSpeedMtoKm(10)).toBe('36.00');
-    expect(formatSpeedMtoKm(2.5)).toBe('9.00');
+describe('formatMpsToKmh', () => {
+  it('converts meters per second to kilometers per hour with one decimal place', () => {
+    expect(formatMpsToKmh(5)).toBe('18.0');
+    expect(formatMpsToKmh(10)).toBe('36.0');
+    expect(formatMpsToKmh(2.5)).toBe('9.0');
   });
 });

@@ -1,6 +1,6 @@
 'use client';
 
-import { Drawer, Button } from '@chakra-ui/react';
+import { Drawer, Button, CloseButton } from '@chakra-ui/react';
 import { useState } from 'react';
 
 import WeatherDrawerContent from './WeatherDrawerContent';
@@ -25,7 +25,14 @@ function WeatherSub() {
             <Drawer.Body>
               <WeatherDrawerContent />
             </Drawer.Body>
-            <Drawer.CloseTrigger />
+            <Drawer.CloseTrigger
+              asChild
+              position="absolute"
+              top="2"
+              insetEnd="2"
+            >
+              <CloseButton aria-label="Close" />
+            </Drawer.CloseTrigger>
           </Drawer.Content>
         </Drawer.Positioner>
       </Drawer.Root>
