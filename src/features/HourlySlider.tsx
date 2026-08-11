@@ -1,12 +1,11 @@
 import { HStack, Box, Skeleton } from '@chakra-ui/react';
-import { useSelector } from 'react-redux';
 
-import { RootState } from '@/app/store';
+import { useAppSelector } from '@/app/store';
 
 import HourlyItem from './components/HourlyItem';
 
 function HourlySlider() {
-  const allHoursData = useSelector((state: RootState) => state.weather.hourly);
+  const allHoursData = useAppSelector((state) => state.weather.hourly);
 
   const hourlyItems = allHoursData.slice(0, 5).map((el) => {
     return <HourlyItem key={el.dt} data={el} />;

@@ -1,16 +1,15 @@
 import { HStack, Spacer } from '@chakra-ui/react';
 import dayjs from 'dayjs';
-import { useSelector } from 'react-redux';
 
-import { RootState } from '@/app/store';
+import { useAppSelector } from '@/app/store';
 
 import DataStack from './DataStack';
 
 function WeatherDrawerContent() {
-  const { location, loading } = useSelector(
-    (state: RootState) => state.weather,
-  );
+  const location = useAppSelector((state) => state.weather.location);
+  const currentStatus = useAppSelector((state) => state.weather.currentStatus);
 
+  const loading = currentStatus === 'idle' || currentStatus === 'loading';
   const { sunrise = 0, sunset = 0 } = location || {};
 
   return (

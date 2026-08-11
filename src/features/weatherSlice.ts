@@ -1,55 +1,57 @@
+import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '@/app/store';
 import type {
   DailyForecastItem,
   ForecastWeather,
-  Location,
+  LocationInfo,
   MainWeather,
   WeatherCondition,
   Wind,
 } from './types';
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 
-const ApiKey = process.env.NEXT_PUBLIC_API_KEY;
-const WeatherEndpoint = process.env.NEXT_PUBLIC_WEATHER_API_URL;
-const ForecastEndpoint = process.env.NEXT_PUBLIC_FORECAST_API_URL;
+import { fetchCurrentWeather, fetchForecastData } from './weatherApi';
+
+type RequestStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
 
 type SliceState = {
-  activeLocation: string;
+  activeLocation: { lat: number; lon: number; name: string };
   main: MainWeather | null;
   weather: WeatherCondition[] | null;
   visibility: number;
   wind: Wind | null;
-  rain?: number;
   clouds?: number;
   hourly: ForecastWeather[];
   daily: DailyForecastItem[];
-  location: Location | null;
-  loading: boolean;
-  error: string | undefined;
+  location: LocationInfo | null;
+  currentStatus: RequestStatus;
+  currentError: string | undefined;
+  forecastStatus: RequestStatus;
+  forecastError: string | undefined;
 };
 
 const initialState: SliceState = {
-  activeLocation: '30.0443879-31.2357257', // Cairo, EG
+  activeLocation: { lat: 30.0443879, lon: 31.2357257, name: 'Cairo, EG' },
   main: null,
   weather: null,
   visibility: 0,
   wind: null,
-  rain: 0,
   clouds: 0,
   hourly: [],
   daily: [],
   location: null,
-  loading: false,
-  error: undefined,
+  currentStatus: 'idle',
+  currentError: undefined,
+  forecastStatus: 'idle',
+  forecastError: undefined,
 };
 
 export const fetchActiveWeather = createAsyncThunk<
   {
     main: MainWeather;
     weather: WeatherCondition[];
-    location: Location;
+    location: LocationInfo;
     visibility: number;
     wind: Wind;
     clouds?: number;
@@ -59,13 +61,9 @@ export const fetchActiveWeather = createAsyncThunk<
     state: RootState;
   }
 >('weather/fetchActiveWeather', async (_, thunkapi) => {
-  const coord = thunkapi.getState().weather.activeLocation;
-  const [lat, lon] = coord.split('-');
-  const results = await axios.get(
-    `${WeatherEndpoint}?lat=${lat}&lon=${lon}&appid=${ApiKey}&units=metric`,
-  );
-
-  const { main, weather, sys, visibility, wind, clouds } = results.data;
+  const { lat, lon } = thunkapi.getState().weather.activeLocation;
+  const { main, weather, sys, visibility, wind, clouds } =
+    await fetchCurrentWeather({ lat, lon }, thunkapi.signal);
 
   return {
     main,
@@ -73,7 +71,7 @@ export const fetchActiveWeather = createAsyncThunk<
     location: sys,
     visibility,
     wind,
-    clouds: clouds.all,
+    clouds: clouds?.all,
   };
 });
 
@@ -87,13 +85,8 @@ export const fetchForecast = createAsyncThunk<
     state: RootState;
   }
 >('weather/fetchForecast', async (_, thunkapi) => {
-  const coord = thunkapi.getState().weather.activeLocation;
-  const [lat, lon] = coord.split('-');
-  const results = await axios.get(
-    `${ForecastEndpoint}?lat=${lat}&lon=${lon}&appid=${ApiKey}&units=metric`,
-  );
-
-  const { list } = results.data as { list: ForecastWeather[] };
+  const { lat, lon } = thunkapi.getState().weather.activeLocation;
+  const { list } = await fetchForecastData({ lat, lon }, thunkapi.signal);
 
   // Group forecast items by day and compute min/max temps
   const grouped = new Map<
@@ -137,47 +130,53 @@ export const weatherSlice = createSlice({
   name: 'weather',
   initialState,
   reducers: {
-    locationAdded() {},
-    locationUpdated(state, action) {
+    locationUpdated(
+      state,
+      action: PayloadAction<SliceState['activeLocation']>,
+    ) {
       state.activeLocation = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchActiveWeather.pending, (state) => {
-        state.loading = true;
+        state.currentStatus = 'loading';
+        state.currentError = undefined;
       })
       .addCase(fetchActiveWeather.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
+        state.currentStatus = 'failed';
+        state.currentError = action.error.message;
       })
       .addCase(fetchActiveWeather.fulfilled, (state, action) => {
-        state.loading = false;
         const { main, weather, location, visibility, wind, clouds } =
           action.payload;
-        state.main = { ...main };
-        state.weather = { ...weather };
-        state.location = { ...location };
+        state.currentStatus = 'succeeded';
+        state.currentError = undefined;
+        state.main = main;
+        state.weather = weather;
+        state.location = location;
         state.visibility = visibility;
-        state.wind = { ...wind };
+        state.wind = wind;
         state.clouds = clouds;
       })
       .addCase(fetchForecast.pending, (state) => {
-        state.loading = true;
+        state.forecastStatus = 'loading';
+        state.forecastError = undefined;
       })
       .addCase(fetchForecast.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
+        state.forecastStatus = 'failed';
+        state.forecastError = action.error.message;
       })
       .addCase(fetchForecast.fulfilled, (state, action) => {
-        state.loading = false;
         const { list, daily } = action.payload;
-        state.hourly = [...list];
-        state.daily = [...daily];
+        state.forecastStatus = 'succeeded';
+        state.forecastError = undefined;
+        state.hourly = list;
+        state.daily = daily;
       });
   },
 });
 
-export const { locationAdded, locationUpdated } = weatherSlice.actions;
+export const { locationUpdated } = weatherSlice.actions;
 
 export default weatherSlice.reducer;

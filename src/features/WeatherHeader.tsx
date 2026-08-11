@@ -10,28 +10,60 @@ import {
   Image,
 } from '@chakra-ui/react';
 import { RefreshCw } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
-import { RootState, useAppDispatch } from '@/app/store';
+import { useAppDispatch, useAppSelector } from '@/app/store';
 
-import { fetchActiveWeather } from './weatherSlice';
+import { fetchActiveWeather, fetchForecast } from './weatherSlice';
 import { toaster } from '../components/ui/toaster';
 import { formatMtoKm, formatSpeedMtoKm } from '../util/util';
 
 function WeatherHeader() {
-  const { main, weather, visibility, wind, clouds, loading } = useSelector(
-    (state: RootState) => state.weather,
+  const main = useAppSelector((state) => state.weather.main);
+  const weather = useAppSelector((state) => state.weather.weather);
+  const visibility = useAppSelector((state) => state.weather.visibility);
+  const wind = useAppSelector((state) => state.weather.wind);
+  const clouds = useAppSelector((state) => state.weather.clouds);
+  const locationName = useAppSelector(
+    (state) => state.weather.activeLocation.name,
   );
+  const currentStatus = useAppSelector((state) => state.weather.currentStatus);
+  const currentError = useAppSelector((state) => state.weather.currentError);
+  const forecastStatus = useAppSelector(
+    (state) => state.weather.forecastStatus,
+  );
+  const forecastError = useAppSelector((state) => state.weather.forecastError);
   const dispatch = useAppDispatch();
+
+  // 'idle' counts as loading so the first paint shows skeletons, not 0°
+  const loading = currentStatus === 'idle' || currentStatus === 'loading';
+  const refreshing =
+    currentStatus === 'loading' || forecastStatus === 'loading';
 
   const { temp = 0, feels_like = 0, pressure = 0, humidity = 0 } = main || {};
   const { speed = 0 } = wind || {};
 
-  const cloudIcon = weather ? `icons/${weather[0].icon}.png` : `icons/11n.png`;
+  const cloudIcon = weather?.[0]
+    ? `icons/${weather[0].icon}.png`
+    : `icons/11n.png`;
+
+  // A pending request always passes through 'loading' first, so entering
+  // 'failed' changes these deps and the toast fires once per failure.
+  useEffect(() => {
+    if (currentStatus !== 'failed' && forecastStatus !== 'failed') return;
+
+    toaster.error({
+      title: 'Error Updating Weather.',
+      description: currentError ?? forecastError,
+      duration: 5000,
+    });
+  }, [currentStatus, forecastStatus, currentError, forecastError]);
 
   const updateWeather = () => {
-    dispatch(fetchActiveWeather())
-      .unwrap()
+    Promise.all([
+      dispatch(fetchActiveWeather()).unwrap(),
+      dispatch(fetchForecast()).unwrap(),
+    ])
       .then(() => {
         toaster.success({
           title: 'Weather Updated.',
@@ -39,10 +71,7 @@ function WeatherHeader() {
         });
       })
       .catch(() => {
-        toaster.error({
-          title: 'Error Updating Weather.',
-          duration: 3000,
-        });
+        // Failures are surfaced by the status effect above.
       });
   };
 
@@ -51,10 +80,10 @@ function WeatherHeader() {
       <VStack gap="1rem">
         <HStack gap={4}>
           <Heading as="h1" size="lg">
-            Cairo, EG
+            {locationName}
           </Heading>
           <Button onClick={updateWeather} variant="plain" size="sm">
-            {loading ? <Spinner size="sm" /> : <RefreshCw />}
+            {refreshing ? <Spinner size="sm" /> : <RefreshCw />}
           </Button>
         </HStack>
         <HStack>
@@ -109,7 +138,7 @@ function WeatherHeader() {
           <Heading as="h3" size="xs">
             Clouds
             <Skeleton loading={loading}>
-              {`${Math.round(clouds || 0)}%`}
+              {`${Math.round(clouds ?? 0)}%`}
             </Skeleton>
           </Heading>
         </HStack>

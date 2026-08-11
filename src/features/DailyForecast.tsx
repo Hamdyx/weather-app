@@ -1,12 +1,11 @@
 import { Box, Skeleton } from '@chakra-ui/react';
-import { useSelector } from 'react-redux';
 
-import { RootState } from '@/app/store';
+import { useAppSelector } from '@/app/store';
 
 import DayItem from './DayItem';
 
 function DailyForecast() {
-  const dailyItems = useSelector((state: RootState) => state.weather.daily);
+  const dailyItems = useAppSelector((state) => state.weather.daily);
 
   const content = dailyItems.map((item) => {
     return <DayItem key={item.dt} item={item} />;
