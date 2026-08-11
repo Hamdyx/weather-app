@@ -1,6 +1,8 @@
+'use client';
+
 import { Box, Skeleton } from '@chakra-ui/react';
 
-import { useAppSelector } from '@/app/store';
+import { useAppSelector } from '@/store';
 
 import DayItem from './DayItem';
 

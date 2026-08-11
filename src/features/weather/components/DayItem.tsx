@@ -1,8 +1,10 @@
-import type { DailyForecastItem } from './types';
+'use client';
+
+import type { DailyForecastItem } from '../types';
 
 import { HStack, Grid, GridItem, Image } from '@chakra-ui/react';
 
-import { formatUnixDay } from '../util/util';
+import { formatUnixDay } from '@/util/util';
 
 interface Props {
   item: DailyForecastItem;

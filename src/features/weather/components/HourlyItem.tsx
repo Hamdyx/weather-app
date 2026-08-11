@@ -1,7 +1,9 @@
+'use client';
+
+import type { ForecastWeather } from '../types';
+
 import { Text, Box, Image } from '@chakra-ui/react';
 import dayjs from 'dayjs';
-
-import { ForecastWeather } from '@/features/types';
 
 interface Props {
   data: ForecastWeather;

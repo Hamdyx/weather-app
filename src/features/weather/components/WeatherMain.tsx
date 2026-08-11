@@ -3,13 +3,13 @@
 import { Flex, Spacer } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
-import { useAppDispatch } from '@/app/store';
+import { useAppDispatch } from '@/store';
 
 import DailyForecast from './DailyForecast';
 import HourlySlider from './HourlySlider';
 import WeatherHeader from './WeatherHeader';
-import { fetchActiveWeather, fetchForecast } from './weatherSlice';
 import WeatherSub from './WeatherSub';
+import { fetchActiveWeather, fetchForecast } from '../weatherSlice';
 
 function WeatherMain() {
   const dispatch = useAppDispatch();
