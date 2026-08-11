@@ -9,7 +9,7 @@ import {
   Spinner,
   Image,
 } from '@chakra-ui/react';
-import { LuRefreshCw } from 'react-icons/lu';
+import { RefreshCw } from 'lucide-react';
 import { useSelector } from 'react-redux';
 
 import { RootState, useAppDispatch } from '@/app/store';
@@ -54,7 +54,7 @@ function WeatherHeader() {
             Cairo, EG
           </Heading>
           <Button onClick={updateWeather} variant="plain" size="sm">
-            {loading ? <Spinner size="sm" /> : <LuRefreshCw />}
+            {loading ? <Spinner size="sm" /> : <RefreshCw />}
           </Button>
         </HStack>
         <HStack>
