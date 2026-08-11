@@ -41,13 +41,6 @@ const config = defineConfig({
           borderColor: '{colors.gray.500}',
         },
       },
-      selected: {
-        value: {
-          bg: '{colors.teal.500}',
-          color: '{colors.teal.700}',
-          borderColor: '{colors.orange.500}',
-        },
-      },
     },
   },
 });
