@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
 
+const METERS_PER_KILOMETER = 1000;
+const SECONDS_PER_HOUR = 60 * 60;
+
 export function formatUnixDay(unixDate: number) {
   const date = dayjs.unix(unixDate);
   const today = dayjs().startOf('day');
@@ -11,13 +14,14 @@ export function formatUnixDay(unixDate: number) {
 }
 
 export function formatMtoKm(meters: number) {
-  const kilometers = meters / 1000;
+  const kilometers = meters / METERS_PER_KILOMETER;
 
-  return kilometers.toFixed(2);
+  return kilometers.toFixed(1);
 }
 
-export function formatSpeedMtoKm(metersPerSecond: number) {
-  const kilometersPerHour = (metersPerSecond * 60 * 60) / 1000;
+export function formatMpsToKmh(metersPerSecond: number) {
+  const kilometersPerHour =
+    (metersPerSecond * SECONDS_PER_HOUR) / METERS_PER_KILOMETER;
 
-  return kilometersPerHour.toFixed(2);
+  return kilometersPerHour.toFixed(1);
 }
