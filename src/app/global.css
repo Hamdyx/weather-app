@@ -17,18 +17,8 @@
 
 .days-forecast {
   padding: 2rem 0;
-  background: #294b60c4;
 }
 
 .hourly-icon {
   margin: auto;
-}
-
-p.day-forecast {
-  margin-left: auto !important;
-}
-
-.curr_weather > * {
-  display: flex;
-  gap: 5px;
 }
