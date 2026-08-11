@@ -17,13 +17,13 @@ cp .env.example .env
 
 ## Commands
 
-| Command            | What it does                                              |
-| ------------------ | --------------------------------------------------------- |
-| `npm run dev`      | Dev server at http://localhost:3000                       |
-| `npm run build`    | Production build — static export into `./build`           |
-| `npm start`        | Serves an existing `./build` locally (build first)        |
-| `npm run lint`     | ESLint                                                    |
-| `npm run lint:fix` | ESLint with autofix                                       |
+| Command            | What it does                                       |
+| ------------------ | -------------------------------------------------- |
+| `npm run dev`      | Dev server at http://localhost:3000                |
+| `npm run build`    | Production build — static export into `./build`    |
+| `npm start`        | Serves an existing `./build` locally (build first) |
+| `npm run lint`     | ESLint                                             |
+| `npm run lint:fix` | ESLint with autofix                                |
 
 ## Deployment
 
