@@ -9,7 +9,9 @@ Guidance for AI agents (and humans) working in this repository.
 - `npm run lint` / `npm run lint:fix` — ESLint (flat config)
 - `npm start` — serves an **existing** `./build` via `npx serve`; it does not build. Run `npm run build` first.
 
-Type-check with `npx tsc --noEmit` (no dedicated script).
+- `npm run type-check` — type-check with `tsc --noEmit`
+- `npm test` / `npm run test:watch` — Vitest
+- `npm run format` / `npm run format:check` — Prettier
 
 ## Static-export constraint
 
@@ -62,7 +64,9 @@ Any change must pass all of:
 
 ```sh
 npm run lint
-npx tsc --noEmit
+npm run type-check
+npm test
+npm run format:check
 npm run build
 ```
 
