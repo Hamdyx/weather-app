@@ -5,13 +5,15 @@ import type { ForecastWeather } from '../types';
 import { Text, Box, Image } from '@chakra-ui/react';
 import dayjs from 'dayjs';
 
+import { weatherIconPath } from '../icons';
+
 interface Props {
   data: ForecastWeather;
 }
 
 function HourlyItem({ data }: Props) {
   const { dt, main, weather } = data;
-  const cloudIcon = `icons/${weather[0].icon}.png`;
+  const cloudIcon = weatherIconPath(weather[0].icon);
 
   return (
     <Box flex={1} h="75%">
@@ -20,7 +22,7 @@ function HourlyItem({ data }: Props) {
       </Text>
       <Image
         src={cloudIcon}
-        alt={`${weather[0].description}`}
+        alt={weather[0].description}
         width={50}
         height={50}
         className="hourly-icon"
