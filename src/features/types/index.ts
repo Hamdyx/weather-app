@@ -1,4 +1,4 @@
-export interface Location {
+export interface LocationInfo {
   type: number;
   id: number;
   country: string;
@@ -20,8 +20,8 @@ export interface MainWeather {
   temp_max: number;
   pressure: number;
   humidity: number;
-  sea_level: number;
-  grnd_level: number;
+  sea_level?: number;
+  grnd_level?: number;
   temp_kf?: number;
 }
 
@@ -49,11 +49,31 @@ export interface ForecastWeather {
   wind: Wind;
   visibility: number;
   pop: number;
-  rain: {
+  rain?: {
     '3h': number;
   };
   sys: {
     pod: string;
   };
   dt_txt: string;
+}
+
+export interface Coordinates {
+  lat: number;
+  lon: number;
+}
+
+/** Shape of the OpenWeatherMap `/data/2.5/weather` response we consume. */
+export interface CurrentWeatherResponse {
+  main: MainWeather;
+  weather: WeatherCondition[];
+  sys: LocationInfo;
+  visibility: number;
+  wind: Wind;
+  clouds?: Cloud;
+}
+
+/** Shape of the OpenWeatherMap `/data/2.5/forecast` response we consume. */
+export interface ForecastResponse {
+  list: ForecastWeather[];
 }
