@@ -6,7 +6,7 @@ import LocationInput from './components/LocationInput';
 
 export const metadata: Metadata = {
   title: 'Locations',
-  description: 'Web site created with Next.js.',
+  description: 'Manage the cities you track weather for.',
 };
 
 function Locations() {
@@ -14,12 +14,12 @@ function Locations() {
     <main>
       <Box w="100%" p={4}>
         <HStack>
-          <Heading as="h3" size="md">
+          <Heading as="h1" size="md">
             Managed cities
           </Heading>
         </HStack>
         <VStack mt={4} gap={4}>
-          locationContent
+          No managed cities yet.
         </VStack>
       </Box>
       <Center p={4}>
