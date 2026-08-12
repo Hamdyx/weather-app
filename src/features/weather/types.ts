@@ -1,6 +1,6 @@
 export interface LocationInfo {
-  type: number;
-  id: number;
+  type?: number;
+  id?: number;
   country: string;
   sunrise: number;
   sunset: number;
@@ -13,6 +13,7 @@ export interface WeatherCondition {
   icon: string;
 }
 
+/** Shared between current-weather and forecast responses; temp_kf is forecast-only. */
 export interface MainWeather {
   temp: number;
   feels_like: number;
@@ -28,7 +29,7 @@ export interface MainWeather {
 export interface Wind {
   speed: number;
   deg: number;
-  gust: number;
+  gust?: number;
 }
 
 export interface Cloud {
@@ -62,7 +63,7 @@ export interface CurrentWeatherResponse {
   main: MainWeather;
   weather: WeatherCondition[];
   sys: LocationInfo;
-  visibility: number;
+  visibility?: number;
   wind: Wind;
   clouds?: Cloud;
   /** Shift from UTC in seconds for the location. */

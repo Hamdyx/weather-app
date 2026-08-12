@@ -24,7 +24,7 @@ type SliceState = {
   activeLocation: { lat: number; lon: number; name: string };
   main: MainWeather | null;
   weather: WeatherCondition[] | null;
-  visibility: number;
+  visibility: number | null;
   wind: Wind | null;
   clouds?: number;
   hourly: ForecastWeather[];
@@ -42,7 +42,7 @@ const initialState: SliceState = {
   activeLocation: { lat: 30.0443879, lon: 31.2357257, name: 'Cairo, EG' },
   main: null,
   weather: null,
-  visibility: 0,
+  visibility: null,
   wind: null,
   clouds: 0,
   hourly: [],
@@ -61,7 +61,7 @@ export const fetchActiveWeather = createAsyncThunk<
     main: MainWeather;
     weather: WeatherCondition[];
     location: LocationInfo;
-    visibility: number;
+    visibility: number | null;
     wind: Wind;
     clouds?: number;
     timezone: number;
@@ -75,7 +75,7 @@ export const fetchActiveWeather = createAsyncThunk<
     main,
     weather,
     location: sys,
-    visibility,
+    visibility: visibility ?? null,
     wind,
     clouds: clouds?.all,
     timezone,

@@ -61,9 +61,10 @@ function WeatherHeader() {
     !windUnavailable && wind
       ? `${formatMpsToKmh(wind.speed)} km/h`
       : PLACEHOLDER;
-  const visibilityValue = !dataUnavailable
-    ? `${formatMtoKm(visibility)} km`
-    : PLACEHOLDER;
+  const visibilityValue =
+    !dataUnavailable && visibility !== null
+      ? `${formatMtoKm(visibility)} km`
+      : PLACEHOLDER;
   const cloudsValue = !dataUnavailable
     ? `${Math.round(clouds ?? 0)}%`
     : PLACEHOLDER;
