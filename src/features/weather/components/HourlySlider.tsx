@@ -4,17 +4,28 @@ import { HStack, Box, Skeleton } from '@chakra-ui/react';
 
 import { useAppSelector } from '@/store';
 
+import {
+  selectForecastStatus,
+  selectHourlySlots,
+  selectTimezoneOffsetSeconds,
+} from '../weatherSlice';
 import HourlyItem from './HourlyItem';
 
 function HourlySlider() {
-  const allHoursData = useAppSelector((state) => state.weather.hourly);
+  const hourlySlots = useAppSelector(selectHourlySlots);
+  const forecastStatus = useAppSelector(selectForecastStatus);
+  const utcOffsetSeconds = useAppSelector(selectTimezoneOffsetSeconds) ?? 0;
 
-  const hourlyItems = allHoursData.slice(0, 5).map((el) => {
-    return <HourlyItem key={el.dt} data={el} />;
+  const loading = forecastStatus === 'idle' || forecastStatus === 'loading';
+
+  const hourlyItems = hourlySlots.map((el) => {
+    return (
+      <HourlyItem key={el.dt} data={el} utcOffsetSeconds={utcOffsetSeconds} />
+    );
   });
 
   return (
-    <Skeleton height="101px" loading={allHoursData.length === 0}>
+    <Skeleton height="101px" loading={loading}>
       <Box layerStyle="hourly">
         <HStack
           gap="8px"
