@@ -1,25 +1,26 @@
 'use client';
 
-import type { DailyForecastItem } from '../types';
+import type { DailyForecastDay } from '../forecast';
 
 import { HStack, Grid, GridItem, Image, Text } from '@chakra-ui/react';
 
-import { formatUnixDay } from '@/util/format';
+import { formatDayLabel } from '@/util/format';
 
 import { weatherIconPath } from '../icons';
 
 interface Props {
-  item: DailyForecastItem;
+  item: DailyForecastDay;
+  utcOffsetSeconds: number;
 }
 
-function DayItem({ item }: Props) {
+function DayItem({ item, utcOffsetSeconds }: Props) {
   const { dt, weather, temp } = item;
 
   const icon = weatherIconPath(weather[0].icon);
   return (
     <Grid templateColumns="repeat(12, 1fr)" gap={6}>
       <GridItem w="100%" colSpan={3}>
-        <Text>{formatUnixDay(dt)}</Text>
+        <Text>{formatDayLabel(dt, utcOffsetSeconds)}</Text>
       </GridItem>
 
       <GridItem w="100%" colSpan={9}>

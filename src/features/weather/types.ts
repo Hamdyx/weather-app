@@ -35,12 +35,6 @@ export interface Cloud {
   all: number;
 }
 
-export interface DailyForecastItem {
-  dt: number;
-  weather: WeatherCondition[];
-  temp: { min: number; max: number };
-}
-
 export interface ForecastWeather {
   dt: number;
   main: MainWeather;
