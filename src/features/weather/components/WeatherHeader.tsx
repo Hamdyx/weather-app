@@ -23,6 +23,8 @@ import { fetchActiveWeather, fetchForecast } from '../weatherSlice';
 import DataStack from './DataStack';
 
 const PLACEHOLDER = '—';
+const ERROR_TOAST_DURATION_MS = 5000;
+const SUCCESS_TOAST_DURATION_MS = 3000;
 
 function WeatherHeader() {
   const main = useAppSelector((state) => state.weather.main);
@@ -80,7 +82,7 @@ function WeatherHeader() {
       toaster.error({
         title: 'Error Updating Weather.',
         description: currentError,
-        duration: 5000,
+        duration: ERROR_TOAST_DURATION_MS,
       });
     }
   }, [currentStatus, currentError]);
@@ -94,7 +96,7 @@ function WeatherHeader() {
       toaster.error({
         title: 'Error Updating Weather.',
         description: forecastError,
-        duration: 5000,
+        duration: ERROR_TOAST_DURATION_MS,
       });
     }
   }, [forecastStatus, forecastError]);
@@ -111,7 +113,7 @@ function WeatherHeader() {
       if (results.every((result) => result.status === 'fulfilled')) {
         toaster.success({
           title: 'Weather Updated.',
-          duration: 3000,
+          duration: SUCCESS_TOAST_DURATION_MS,
         });
       }
     });
@@ -143,11 +145,10 @@ function WeatherHeader() {
               height={65}
               htmlWidth={65}
               htmlHeight={65}
-              className="curr-icon"
             />
           </Skeleton>
           <Skeleton loading={loading}>
-            <Heading as="h2" size="4xl" className="curr-temp">
+            <Heading as="h2" size="4xl">
               {tempValue}
             </Heading>
           </Skeleton>
@@ -155,19 +156,12 @@ function WeatherHeader() {
         <Spacer />
         <HStack gap={['1rem', '2rem']}>
           <DataStack
-            className="feels-like-data"
             title="Feels like"
             value={feelsLikeValue}
             loading={loading}
           />
+          <DataStack title="Wind" value={windValue} loading={loading} />
           <DataStack
-            className="wind-data"
-            title="Wind"
-            value={windValue}
-            loading={loading}
-          />
-          <DataStack
-            className="visibility-data"
             title="Visibility"
             value={visibilityValue}
             loading={loading}
@@ -175,24 +169,9 @@ function WeatherHeader() {
         </HStack>
         <Spacer />
         <HStack gap={['.75rem', '2rem']}>
-          <DataStack
-            className="pressure-data"
-            title="Pressure"
-            value={pressureValue}
-            loading={loading}
-          />
-          <DataStack
-            className="humidity-data"
-            title="Humidity"
-            value={humidityValue}
-            loading={loading}
-          />
-          <DataStack
-            className="clouds-data"
-            title="Clouds"
-            value={cloudsValue}
-            loading={loading}
-          />
+          <DataStack title="Pressure" value={pressureValue} loading={loading} />
+          <DataStack title="Humidity" value={humidityValue} loading={loading} />
+          <DataStack title="Clouds" value={cloudsValue} loading={loading} />
         </HStack>
       </VStack>
     </Center>

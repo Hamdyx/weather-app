@@ -11,6 +11,8 @@ import {
 } from '../weatherSlice';
 import DayItem from './DayItem';
 
+const SKELETON_HEIGHT = '420px';
+
 function DailyForecast() {
   const dailyItems = useAppSelector(selectDailyForecast);
   const forecastStatus = useAppSelector(selectForecastStatus);
@@ -30,7 +32,7 @@ function DailyForecast() {
   });
 
   return (
-    <Skeleton height="420px" loading={loading}>
+    <Skeleton height={SKELETON_HEIGHT} loading={loading}>
       <Box layerStyle="hourly" className="days-forecast" p={4}>
         {failed ? <Text>Forecast unavailable — try refresh</Text> : content}
       </Box>
