@@ -14,6 +14,21 @@ import weatherReducer, {
 
 const CAIRO = { lat: 30.0443879, lon: 31.2357257 };
 
+// Fulfilled/rejected actions are ignored unless their requestId matches the
+// one stored by the latest pending action, so every scenario reduces through
+// pending first.
+const reduceAll = (...actions: Parameters<typeof weatherReducer>[1][]) =>
+  actions.reduce(
+    (state, action) => weatherReducer(state, action),
+    weatherReducer(undefined, { type: '@@INIT' }),
+  );
+
+const currentPending = (requestId = 'request-current') =>
+  fetchActiveWeather.pending(requestId, CAIRO);
+
+const forecastPending = (requestId = 'request-forecast') =>
+  fetchForecast.pending(requestId, CAIRO);
+
 const currentPayload: CurrentWeatherResponse = {
   main: {
     temp: 21,
@@ -79,7 +94,7 @@ const makeSlot = (dt: number, temp: number): ForecastWeather => ({
 
 describe('weatherSlice — fulfilled shape', () => {
   it('stores weather as an array', () => {
-    const state = weatherReducer(undefined, fulfilledCurrent());
+    const state = reduceAll(currentPending(), fulfilledCurrent());
 
     expect(Array.isArray(state.weather)).toBe(true);
     expect(state.weather).toEqual(currentPayload.weather);
@@ -87,7 +102,7 @@ describe('weatherSlice — fulfilled shape', () => {
   });
 
   it('stores the remaining current-weather fields', () => {
-    const state = weatherReducer(undefined, fulfilledCurrent());
+    const state = reduceAll(currentPending(), fulfilledCurrent());
 
     expect(state.main).toEqual(currentPayload.main);
     expect(state.location).toEqual(currentPayload.sys);
@@ -106,10 +121,7 @@ describe('weatherSlice — per-request status', () => {
   });
 
   it('tracks the current-weather request without touching the forecast', () => {
-    const pending = weatherReducer(
-      undefined,
-      fetchActiveWeather.pending('request-current', CAIRO),
-    );
+    const pending = weatherReducer(undefined, currentPending());
     expect(pending.currentStatus).toBe('loading');
     expect(pending.forecastStatus).toBe('idle');
 
@@ -120,10 +132,7 @@ describe('weatherSlice — per-request status', () => {
   });
 
   it('tracks the forecast request without touching the current weather', () => {
-    const pending = weatherReducer(
-      undefined,
-      fetchForecast.pending('request-forecast', CAIRO),
-    );
+    const pending = weatherReducer(undefined, forecastPending());
     expect(pending.forecastStatus).toBe('loading');
     expect(pending.currentStatus).toBe('idle');
 
@@ -133,8 +142,8 @@ describe('weatherSlice — per-request status', () => {
   });
 
   it('records the error message on rejection', () => {
-    const state = weatherReducer(
-      undefined,
+    const state = reduceAll(
+      currentPending(),
       fetchActiveWeather.rejected(
         new Error('Request failed with status 401'),
         'request-current',
@@ -147,11 +156,13 @@ describe('weatherSlice — per-request status', () => {
   });
 
   it('does not let one request clobber the other status', () => {
-    const succeeded = weatherReducer(undefined, fulfilledForecast());
+    const succeeded = reduceAll(forecastPending(), fulfilledForecast());
     expect(succeeded.forecastStatus).toBe('succeeded');
 
-    const rejected = weatherReducer(
-      succeeded,
+    const rejected = reduceAll(
+      forecastPending(),
+      fulfilledForecast(),
+      currentPending(),
       fetchActiveWeather.rejected(
         new Error('Request failed with status 500'),
         'request-current',
@@ -166,9 +177,75 @@ describe('weatherSlice — per-request status', () => {
   });
 });
 
+describe('weatherSlice — stale and aborted requests', () => {
+  it('ignores a fulfilled result from a superseded request', () => {
+    const state = reduceAll(
+      currentPending('req-1'),
+      currentPending('req-2'),
+      fetchActiveWeather.fulfilled(
+        {
+          main: currentPayload.main,
+          weather: currentPayload.weather,
+          location: currentPayload.sys,
+          visibility: currentPayload.visibility,
+          wind: currentPayload.wind,
+          clouds: currentPayload.clouds?.all,
+          timezone: currentPayload.timezone,
+        },
+        'req-1',
+        CAIRO,
+      ),
+    );
+
+    expect(state.currentStatus).toBe('loading');
+    expect(state.main).toBeNull();
+  });
+
+  it('ignores a rejection from a superseded request', () => {
+    const state = reduceAll(
+      currentPending('req-1'),
+      currentPending('req-2'),
+      fetchActiveWeather.rejected(
+        new Error('Request failed with status 500'),
+        'req-1',
+        CAIRO,
+      ),
+    );
+
+    expect(state.currentStatus).toBe('loading');
+    expect(state.currentError).toBeUndefined();
+  });
+
+  it('resets to idle on an aborted current-weather request', () => {
+    const abortError = new Error('The user aborted a request.');
+    abortError.name = 'AbortError';
+
+    const state = reduceAll(
+      currentPending('req-1'),
+      fetchActiveWeather.rejected(abortError, 'req-1', CAIRO),
+    );
+
+    expect(state.currentStatus).toBe('idle');
+    expect(state.currentError).toBeUndefined();
+  });
+
+  it('resets to idle on an aborted forecast request', () => {
+    const abortError = new Error('The user aborted a request.');
+    abortError.name = 'AbortError';
+
+    const state = reduceAll(
+      forecastPending('req-1'),
+      fetchForecast.rejected(abortError, 'req-1', CAIRO),
+    );
+
+    expect(state.forecastStatus).toBe('idle');
+    expect(state.forecastError).toBeUndefined();
+  });
+});
+
 describe('weatherSlice — timezone offset', () => {
   it('stores the offset from the forecast thunk', () => {
-    const state = weatherReducer(undefined, fulfilledForecast());
+    const state = reduceAll(forecastPending(), fulfilledForecast());
 
     expect(selectTimezoneOffsetSeconds({ weather: state })).toBe(
       FORECAST_TIMEZONE_SECONDS,
@@ -176,7 +253,7 @@ describe('weatherSlice — timezone offset', () => {
   });
 
   it('stores the offset from the current-weather thunk', () => {
-    const state = weatherReducer(undefined, fulfilledCurrent());
+    const state = reduceAll(currentPending(), fulfilledCurrent());
 
     expect(selectTimezoneOffsetSeconds({ weather: state })).toBe(
       currentPayload.timezone,
@@ -192,7 +269,7 @@ describe('weatherSlice — derived forecast selectors', () => {
   );
 
   const stateWithForecast = () => ({
-    weather: weatherReducer(undefined, fulfilledForecast(slots)),
+    weather: reduceAll(forecastPending(), fulfilledForecast(slots)),
   });
 
   it('derives city-day groups from the stored list and offset', () => {

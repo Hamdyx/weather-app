@@ -32,8 +32,10 @@ type SliceState = {
   location: LocationInfo | null;
   currentStatus: RequestStatus;
   currentError: string | undefined;
+  currentRequestId: string | null;
   forecastStatus: RequestStatus;
   forecastError: string | undefined;
+  forecastRequestId: string | null;
 };
 
 const initialState: SliceState = {
@@ -48,8 +50,10 @@ const initialState: SliceState = {
   location: null,
   currentStatus: 'idle',
   currentError: undefined,
+  currentRequestId: null,
   forecastStatus: 'idle',
   forecastError: undefined,
+  forecastRequestId: null,
 };
 
 export const fetchActiveWeather = createAsyncThunk<
@@ -103,17 +107,27 @@ export const weatherSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchActiveWeather.pending, (state) => {
+      .addCase(fetchActiveWeather.pending, (state, action) => {
+        state.currentRequestId = action.meta.requestId;
         state.currentStatus = 'loading';
         state.currentError = undefined;
       })
       .addCase(fetchActiveWeather.rejected, (state, action) => {
+        // Results of a superseded request must not touch the state.
+        if (action.meta.requestId !== state.currentRequestId) return;
+        state.currentRequestId = null;
+        if (action.meta.aborted) {
+          state.currentStatus = 'idle';
+          return;
+        }
         state.currentStatus = 'failed';
         state.currentError = action.error.message;
       })
       .addCase(fetchActiveWeather.fulfilled, (state, action) => {
+        if (action.meta.requestId !== state.currentRequestId) return;
         const { main, weather, location, visibility, wind, clouds, timezone } =
           action.payload;
+        state.currentRequestId = null;
         state.currentStatus = 'succeeded';
         state.currentError = undefined;
         state.main = main;
@@ -124,16 +138,25 @@ export const weatherSlice = createSlice({
         state.clouds = clouds;
         state.timezoneOffsetSeconds = timezone;
       })
-      .addCase(fetchForecast.pending, (state) => {
+      .addCase(fetchForecast.pending, (state, action) => {
+        state.forecastRequestId = action.meta.requestId;
         state.forecastStatus = 'loading';
         state.forecastError = undefined;
       })
       .addCase(fetchForecast.rejected, (state, action) => {
+        if (action.meta.requestId !== state.forecastRequestId) return;
+        state.forecastRequestId = null;
+        if (action.meta.aborted) {
+          state.forecastStatus = 'idle';
+          return;
+        }
         state.forecastStatus = 'failed';
         state.forecastError = action.error.message;
       })
       .addCase(fetchForecast.fulfilled, (state, action) => {
+        if (action.meta.requestId !== state.forecastRequestId) return;
         const { list, timezone } = action.payload;
+        state.forecastRequestId = null;
         state.forecastStatus = 'succeeded';
         state.forecastError = undefined;
         state.hourly = list;
