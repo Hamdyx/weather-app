@@ -1,4 +1,4 @@
-import type { CurrentWeatherResponse } from './types';
+import type { CurrentWeatherResponse, ForecastWeather } from './types';
 
 import { configureStore } from '@reduxjs/toolkit';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -7,6 +7,9 @@ import weatherReducer, {
   fetchActiveWeather,
   fetchForecast,
   locationUpdated,
+  selectDailyForecast,
+  selectHourlySlots,
+  selectTimezoneOffsetSeconds,
 } from './weatherSlice';
 
 const currentPayload: CurrentWeatherResponse = {
@@ -38,17 +41,39 @@ const fulfilledCurrent = () =>
       visibility: currentPayload.visibility,
       wind: currentPayload.wind,
       clouds: currentPayload.clouds?.all,
+      timezone: currentPayload.timezone,
     },
     'request-current',
     undefined,
   );
 
-const fulfilledForecast = () =>
+const FORECAST_TIMEZONE_SECONDS = 7200;
+
+const fulfilledForecast = (list: ForecastWeather[] = []) =>
   fetchForecast.fulfilled(
-    { list: [], daily: [] },
+    { list, timezone: FORECAST_TIMEZONE_SECONDS },
     'request-forecast',
     undefined,
   );
+
+const makeSlot = (dt: number, temp: number): ForecastWeather => ({
+  dt,
+  main: {
+    temp,
+    feels_like: temp,
+    temp_min: temp - 1,
+    temp_max: temp + 1,
+    pressure: 1012,
+    humidity: 40,
+  },
+  weather: [{ id: 800, main: 'Clear', description: 'clear sky', icon: '01d' }],
+  clouds: { all: 10 },
+  wind: { speed: 3, deg: 90, gust: 4 },
+  visibility: 10000,
+  pop: 0,
+  sys: { pod: 'd' },
+  dt_txt: '',
+});
 
 describe('weatherSlice — fulfilled shape', () => {
   it('stores weather as an array', () => {
@@ -136,6 +161,52 @@ describe('weatherSlice — per-request status', () => {
     expect(rejected.currentError).toBe('Request failed with status 500');
     expect(rejected.forecastStatus).toBe('succeeded');
     expect(rejected.forecastError).toBeUndefined();
+  });
+});
+
+describe('weatherSlice — timezone offset', () => {
+  it('stores the offset from the forecast thunk', () => {
+    const state = weatherReducer(undefined, fulfilledForecast());
+
+    expect(selectTimezoneOffsetSeconds({ weather: state })).toBe(
+      FORECAST_TIMEZONE_SECONDS,
+    );
+  });
+
+  it('stores the offset from the current-weather thunk', () => {
+    const state = weatherReducer(undefined, fulfilledCurrent());
+
+    expect(selectTimezoneOffsetSeconds({ weather: state })).toBe(
+      currentPayload.timezone,
+    );
+  });
+});
+
+describe('weatherSlice — derived forecast selectors', () => {
+  // 16 x 3h slots from city-local midnight: two full days at UTC+2.
+  const firstCityMidnight = Date.UTC(2024, 0, 14, 22, 0) / 1000;
+  const slots = Array.from({ length: 16 }, (_, i) =>
+    makeSlot(firstCityMidnight + i * 3 * 60 * 60, 20 + i),
+  );
+
+  const stateWithForecast = () => ({
+    weather: weatherReducer(undefined, fulfilledForecast(slots)),
+  });
+
+  it('derives city-day groups from the stored list and offset', () => {
+    const daily = selectDailyForecast(stateWithForecast());
+
+    expect(daily.length).toBeGreaterThan(0);
+
+    const dateKeys = daily.map((day) => day.dateKey);
+    expect(new Set(dateKeys).size).toBe(dateKeys.length);
+  });
+
+  it('memoizes: repeated calls on the same state return the same reference', () => {
+    const state = stateWithForecast();
+
+    expect(selectDailyForecast(state)).toBe(selectDailyForecast(state));
+    expect(selectHourlySlots(state)).toBe(selectHourlySlots(state));
   });
 });
 
