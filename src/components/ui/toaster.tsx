@@ -16,8 +16,10 @@ export function Toaster() {
     <ChakraToaster toaster={toaster}>
       {(toast) => (
         <Toast.Root>
-          {toast.title && <Toast.Title />}
-          {toast.description && <Toast.Description />}
+          {toast.title && <Toast.Title>{toast.title}</Toast.Title>}
+          {toast.description && (
+            <Toast.Description>{toast.description}</Toast.Description>
+          )}
           <Toast.CloseTrigger />
         </Toast.Root>
       )}
