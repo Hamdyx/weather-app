@@ -15,7 +15,7 @@ interface Props {
 
 function HourlyItem({ data, utcOffsetSeconds }: Props) {
   const { dt, main, weather } = data;
-  const cloudIcon = weatherIconPath(weather[0].icon);
+  const cloudIcon = weatherIconPath(weather?.[0]?.icon);
 
   return (
     <Box flex={1} h="75%">
@@ -24,7 +24,7 @@ function HourlyItem({ data, utcOffsetSeconds }: Props) {
       </Text>
       <Image
         src={cloudIcon}
-        alt={weather[0].description}
+        alt={weather?.[0]?.description ?? ''}
         width={50}
         height={50}
         className="hourly-icon"

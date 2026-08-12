@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Skeleton } from '@chakra-ui/react';
+import { Box, Skeleton, Text } from '@chakra-ui/react';
 
 import { useAppSelector } from '@/store';
 
@@ -17,6 +17,7 @@ function DailyForecast() {
   const utcOffsetSeconds = useAppSelector(selectTimezoneOffsetSeconds) ?? 0;
 
   const loading = forecastStatus === 'idle' || forecastStatus === 'loading';
+  const failed = forecastStatus === 'failed';
 
   const content = dailyItems.map((item) => {
     return (
@@ -31,7 +32,7 @@ function DailyForecast() {
   return (
     <Skeleton height="420px" loading={loading}>
       <Box layerStyle="hourly" className="days-forecast" p={4}>
-        {content}
+        {failed ? <Text>Forecast unavailable — try refresh</Text> : content}
       </Box>
     </Skeleton>
   );

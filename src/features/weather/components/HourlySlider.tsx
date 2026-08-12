@@ -1,6 +1,6 @@
 'use client';
 
-import { HStack, Box, Skeleton } from '@chakra-ui/react';
+import { HStack, Box, Skeleton, Text } from '@chakra-ui/react';
 
 import { useAppSelector } from '@/store';
 
@@ -17,6 +17,7 @@ function HourlySlider() {
   const utcOffsetSeconds = useAppSelector(selectTimezoneOffsetSeconds) ?? 0;
 
   const loading = forecastStatus === 'idle' || forecastStatus === 'loading';
+  const failed = forecastStatus === 'failed';
 
   const hourlyItems = hourlySlots.map((el) => {
     return (
@@ -33,7 +34,11 @@ function HourlySlider() {
           className="hourly-slider"
           p={1}
         >
-          {hourlyItems}
+          {failed ? (
+            <Text>Forecast unavailable — try refresh</Text>
+          ) : (
+            hourlyItems
+          )}
         </HStack>
       </Box>
     </Skeleton>

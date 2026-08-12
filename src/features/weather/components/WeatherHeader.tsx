@@ -12,7 +12,7 @@ import {
   Image,
 } from '@chakra-ui/react';
 import { RefreshCw } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { toaster } from '@/components/ui/toaster';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -21,6 +21,8 @@ import { formatMpsToKmh, formatMtoKm } from '@/util/format';
 import { weatherIconPath } from '../icons';
 import { fetchActiveWeather, fetchForecast } from '../weatherSlice';
 import DataStack from './DataStack';
+
+const PLACEHOLDER = '—';
 
 function WeatherHeader() {
   const main = useAppSelector((state) => state.weather.main);
@@ -44,22 +46,57 @@ function WeatherHeader() {
   const refreshing =
     currentStatus === 'loading' || forecastStatus === 'loading';
 
-  const { temp = 0, feels_like = 0, pressure = 0, humidity = 0 } = main || {};
-  const { speed = 0 } = wind || {};
+  const dataUnavailable = currentStatus === 'failed' || !main;
+  const windUnavailable = currentStatus === 'failed' || !wind;
+
+  const tempValue =
+    !dataUnavailable && main ? `${Math.round(main.temp)}°` : PLACEHOLDER;
+  const feelsLikeValue =
+    !dataUnavailable && main ? `${Math.round(main.feels_like)}°` : PLACEHOLDER;
+  const pressureValue =
+    !dataUnavailable && main ? `${Math.round(main.pressure)} mb` : PLACEHOLDER;
+  const humidityValue =
+    !dataUnavailable && main ? `${Math.round(main.humidity)}%` : PLACEHOLDER;
+  const windValue =
+    !windUnavailable && wind
+      ? `${formatMpsToKmh(wind.speed)} km/h`
+      : PLACEHOLDER;
+  const visibilityValue = !dataUnavailable
+    ? `${formatMtoKm(visibility)} km`
+    : PLACEHOLDER;
+  const cloudsValue = !dataUnavailable
+    ? `${Math.round(clouds ?? 0)}%`
+    : PLACEHOLDER;
 
   const cloudIcon = weatherIconPath(weather?.[0]?.icon);
 
-  // A pending request always passes through 'loading' first, so entering
-  // 'failed' changes these deps and the toast fires once per failure.
+  const prevCurrentStatusRef = useRef(currentStatus);
   useEffect(() => {
-    if (currentStatus !== 'failed' && forecastStatus !== 'failed') return;
+    const prevStatus = prevCurrentStatusRef.current;
+    prevCurrentStatusRef.current = currentStatus;
 
-    toaster.error({
-      title: 'Error Updating Weather.',
-      description: currentError ?? forecastError,
-      duration: 5000,
-    });
-  }, [currentStatus, forecastStatus, currentError, forecastError]);
+    if (prevStatus !== 'failed' && currentStatus === 'failed') {
+      toaster.error({
+        title: 'Error Updating Weather.',
+        description: currentError,
+        duration: 5000,
+      });
+    }
+  }, [currentStatus, currentError]);
+
+  const prevForecastStatusRef = useRef(forecastStatus);
+  useEffect(() => {
+    const prevStatus = prevForecastStatusRef.current;
+    prevForecastStatusRef.current = forecastStatus;
+
+    if (prevStatus !== 'failed' && forecastStatus === 'failed') {
+      toaster.error({
+        title: 'Error Updating Weather.',
+        description: forecastError,
+        duration: 5000,
+      });
+    }
+  }, [forecastStatus, forecastError]);
 
   const updateWeather = () => {
     Promise.all([
@@ -105,7 +142,7 @@ function WeatherHeader() {
           </Skeleton>
           <Skeleton loading={loading}>
             <Heading as="h2" size="4xl" className="curr-temp">
-              {`${Math.round(temp)}\u00b0`}
+              {tempValue}
             </Heading>
           </Skeleton>
         </HStack>
@@ -114,19 +151,19 @@ function WeatherHeader() {
           <DataStack
             className="feels-like-data"
             title="Feels like"
-            value={`${Math.round(feels_like)}\u00b0`}
+            value={feelsLikeValue}
             loading={loading}
           />
           <DataStack
             className="wind-data"
             title="Wind"
-            value={`${formatMpsToKmh(speed)} km/h`}
+            value={windValue}
             loading={loading}
           />
           <DataStack
             className="visibility-data"
             title="Visibility"
-            value={`${formatMtoKm(visibility)} km`}
+            value={visibilityValue}
             loading={loading}
           />
         </HStack>
@@ -135,19 +172,19 @@ function WeatherHeader() {
           <DataStack
             className="pressure-data"
             title="Pressure"
-            value={`${Math.round(pressure)} mb`}
+            value={pressureValue}
             loading={loading}
           />
           <DataStack
             className="humidity-data"
             title="Humidity"
-            value={`${Math.round(humidity)}%`}
+            value={humidityValue}
             loading={loading}
           />
           <DataStack
             className="clouds-data"
             title="Clouds"
-            value={`${Math.round(clouds ?? 0)}%`}
+            value={cloudsValue}
             loading={loading}
           />
         </HStack>

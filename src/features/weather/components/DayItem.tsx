@@ -16,7 +16,7 @@ interface Props {
 function DayItem({ item, utcOffsetSeconds }: Props) {
   const { dt, weather, temp } = item;
 
-  const icon = weatherIconPath(weather[0].icon);
+  const icon = weatherIconPath(weather?.[0]?.icon);
   return (
     <Grid templateColumns="repeat(12, 1fr)" gap={6}>
       <GridItem w="100%" colSpan={3}>
@@ -25,8 +25,8 @@ function DayItem({ item, utcOffsetSeconds }: Props) {
 
       <GridItem w="100%" colSpan={9}>
         <HStack>
-          <Image src={icon} alt={weather[0].description} margin={0} />
-          <Text>{weather[0].description}</Text>
+          <Image src={icon} alt={weather?.[0]?.description ?? ''} margin={0} />
+          <Text>{weather?.[0]?.description}</Text>
 
           <Text marginLeft="auto">{`${Math.round(temp.max)} / ${Math.round(
             temp.min,
