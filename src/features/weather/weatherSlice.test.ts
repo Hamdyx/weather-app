@@ -26,6 +26,7 @@ const currentPayload: CurrentWeatherResponse = {
   visibility: 10000,
   wind: { speed: 3.5, deg: 180, gust: 5 },
   clouds: { all: 12 },
+  timezone: 10800,
 };
 
 const fulfilledCurrent = () =>
