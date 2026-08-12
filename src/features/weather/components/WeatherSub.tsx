@@ -15,13 +15,19 @@ function WeatherSub() {
       </Button>
       <Drawer.Root
         open={open}
-        onOpenChange={(e: { open: boolean }) => setOpen(e.open)}
+        onOpenChange={(e: Drawer.OpenChangeDetails) => setOpen(e.open)}
         size="xs"
+        lazyMount
+        unmountOnExit
       >
         <Drawer.Backdrop />
         <Drawer.Positioner>
           <Drawer.Content>
-            <Drawer.Header borderBottomWidth="1px">Day Details</Drawer.Header>
+            <Drawer.Header borderBottomWidth="1px">
+              <Drawer.Title fontSize="inherit" fontWeight="inherit">
+                Day Details
+              </Drawer.Title>
+            </Drawer.Header>
             <Drawer.Body>
               <WeatherDrawerContent />
             </Drawer.Body>
