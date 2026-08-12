@@ -71,9 +71,15 @@ export interface CurrentWeatherResponse {
   visibility: number;
   wind: Wind;
   clouds?: Cloud;
+  /** Shift from UTC in seconds for the location. */
+  timezone: number;
 }
 
 /** Shape of the OpenWeatherMap `/data/2.5/forecast` response we consume. */
 export interface ForecastResponse {
   list: ForecastWeather[];
+  city: {
+    /** Shift from UTC in seconds for the location. */
+    timezone: number;
+  };
 }
