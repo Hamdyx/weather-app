@@ -6,7 +6,8 @@ import WeatherMain from '@/features/weather/components/WeatherMain';
 
 export const metadata: Metadata = {
   title: 'Weather App',
-  description: 'Web site created with Next.js.',
+  description:
+    'View current weather conditions and the daily and hourly forecast.',
 };
 
 function HomePage() {

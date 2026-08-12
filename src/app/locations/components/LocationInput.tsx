@@ -9,7 +9,7 @@ function LocationInput({ label, type }: Props) {
   return (
     <Field.Root>
       <Field.Label>{label}</Field.Label>
-      <Input id={label} type={type} />
+      <Input type={type} />
     </Field.Root>
   );
 }

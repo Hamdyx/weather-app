@@ -141,6 +141,8 @@ function WeatherHeader() {
               alt={weather?.[0]?.description ?? ''}
               width={65}
               height={65}
+              htmlWidth={65}
+              htmlHeight={65}
               className="curr-icon"
             />
           </Skeleton>

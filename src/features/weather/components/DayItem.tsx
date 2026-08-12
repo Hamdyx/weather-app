@@ -25,7 +25,16 @@ function DayItem({ item, utcOffsetSeconds }: Props) {
 
       <GridItem w="100%" colSpan={9}>
         <HStack>
-          <Image src={icon} alt={weather?.[0]?.description ?? ''} margin={0} />
+          <Image
+            src={icon}
+            alt={weather?.[0]?.description ?? ''}
+            margin={0}
+            width="48px"
+            height="48px"
+            htmlWidth={48}
+            htmlHeight={48}
+            loading="lazy"
+          />
           <Text>{weather?.[0]?.description}</Text>
 
           <Text marginLeft="auto">{`${Math.round(temp.max)} / ${Math.round(
