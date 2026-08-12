@@ -1,6 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '@/store';
 import type {
+  Coordinates,
   ForecastWeather,
   LocationInfo,
   MainWeather,
@@ -61,12 +62,8 @@ export const fetchActiveWeather = createAsyncThunk<
     clouds?: number;
     timezone: number;
   },
-  void,
-  {
-    state: RootState;
-  }
->('weather/fetchActiveWeather', async (_, thunkapi) => {
-  const { lat, lon } = thunkapi.getState().weather.activeLocation;
+  Coordinates
+>('weather/fetchActiveWeather', async ({ lat, lon }, thunkapi) => {
   const { main, weather, sys, visibility, wind, clouds, timezone } =
     await fetchCurrentWeather({ lat, lon }, thunkapi.signal);
 
@@ -86,12 +83,8 @@ export const fetchForecast = createAsyncThunk<
     list: ForecastWeather[];
     timezone: number;
   },
-  void,
-  {
-    state: RootState;
-  }
->('weather/fetchForecast', async (_, thunkapi) => {
-  const { lat, lon } = thunkapi.getState().weather.activeLocation;
+  Coordinates
+>('weather/fetchForecast', async ({ lat, lon }, thunkapi) => {
   const { list, city } = await fetchForecastData({ lat, lon }, thunkapi.signal);
 
   return { list, timezone: city.timezone };

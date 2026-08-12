@@ -12,6 +12,8 @@ import weatherReducer, {
   selectTimezoneOffsetSeconds,
 } from './weatherSlice';
 
+const CAIRO = { lat: 30.0443879, lon: 31.2357257 };
+
 const currentPayload: CurrentWeatherResponse = {
   main: {
     temp: 21,
@@ -44,7 +46,7 @@ const fulfilledCurrent = () =>
       timezone: currentPayload.timezone,
     },
     'request-current',
-    undefined,
+    CAIRO,
   );
 
 const FORECAST_TIMEZONE_SECONDS = 7200;
@@ -53,7 +55,7 @@ const fulfilledForecast = (list: ForecastWeather[] = []) =>
   fetchForecast.fulfilled(
     { list, timezone: FORECAST_TIMEZONE_SECONDS },
     'request-forecast',
-    undefined,
+    CAIRO,
   );
 
 const makeSlot = (dt: number, temp: number): ForecastWeather => ({
@@ -106,7 +108,7 @@ describe('weatherSlice — per-request status', () => {
   it('tracks the current-weather request without touching the forecast', () => {
     const pending = weatherReducer(
       undefined,
-      fetchActiveWeather.pending('request-current', undefined),
+      fetchActiveWeather.pending('request-current', CAIRO),
     );
     expect(pending.currentStatus).toBe('loading');
     expect(pending.forecastStatus).toBe('idle');
@@ -120,7 +122,7 @@ describe('weatherSlice — per-request status', () => {
   it('tracks the forecast request without touching the current weather', () => {
     const pending = weatherReducer(
       undefined,
-      fetchForecast.pending('request-forecast', undefined),
+      fetchForecast.pending('request-forecast', CAIRO),
     );
     expect(pending.forecastStatus).toBe('loading');
     expect(pending.currentStatus).toBe('idle');
@@ -136,7 +138,7 @@ describe('weatherSlice — per-request status', () => {
       fetchActiveWeather.rejected(
         new Error('Request failed with status 401'),
         'request-current',
-        undefined,
+        CAIRO,
       ),
     );
 
@@ -153,7 +155,7 @@ describe('weatherSlice — per-request status', () => {
       fetchActiveWeather.rejected(
         new Error('Request failed with status 500'),
         'request-current',
-        undefined,
+        CAIRO,
       ),
     );
 
@@ -259,11 +261,8 @@ describe('request URLs', () => {
 
   it('sends negative coordinates unmangled', async () => {
     const store = configureStore({ reducer: { weather: weatherReducer } });
-    store.dispatch(
-      locationUpdated({ lat: -33.86, lon: 151.2, name: 'Sydney, AU' }),
-    );
 
-    await store.dispatch(fetchActiveWeather());
+    await store.dispatch(fetchActiveWeather({ lat: -33.86, lon: 151.2 }));
 
     expect(requestedUrls).toHaveLength(1);
     expect(requestedUrls[0]).toContain('lat=-33.86');
@@ -272,10 +271,10 @@ describe('request URLs', () => {
     expect(store.getState().weather.currentStatus).toBe('succeeded');
   });
 
-  it('sends the default Cairo coordinates', async () => {
+  it('sends the coordinates it was called with', async () => {
     const store = configureStore({ reducer: { weather: weatherReducer } });
 
-    await store.dispatch(fetchActiveWeather());
+    await store.dispatch(fetchActiveWeather(CAIRO));
 
     expect(requestedUrls[0]).toContain('lat=30.0443879');
     expect(requestedUrls[0]).toContain('lon=31.2357257');
