@@ -48,12 +48,36 @@ function buildUrl(endpoint: string, coords: Coordinates, apiKey: string) {
   return `${endpoint}?${params.toString()}`;
 }
 
+/**
+ * Parses an error response body for OpenWeatherMap's `{ cod, message }`
+ * shape. Returns null on any parse failure so the caller can fall back to
+ * the plain status message instead of masking it.
+ */
+async function readErrorMessage(response: Response): Promise<string | null> {
+  try {
+    const body: unknown = await response.json();
+    if (
+      body &&
+      typeof body === 'object' &&
+      typeof (body as Record<string, unknown>).message === 'string'
+    ) {
+      return (body as { message: string }).message;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 async function requestJson<T>(url: string, signal?: AbortSignal): Promise<T> {
   const response = await fetch(url, { signal });
 
   if (!response.ok) {
+    const bodyMessage = await readErrorMessage(response);
     throw new Error(
-      `Weather request failed with status ${response.status} ${response.statusText}`.trim(),
+      bodyMessage
+        ? `Weather request failed (${response.status}): ${bodyMessage}`
+        : `Weather request failed with status ${response.status} ${response.statusText}`.trim(),
     );
   }
 
