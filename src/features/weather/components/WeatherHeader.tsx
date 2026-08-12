@@ -12,7 +12,7 @@ import {
   Image,
 } from '@chakra-ui/react';
 import { RefreshCw } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { toaster } from '@/components/ui/toaster';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -70,17 +70,33 @@ function WeatherHeader() {
 
   const cloudIcon = weatherIconPath(weather?.[0]?.icon);
 
-  // A pending request always passes through 'loading' first, so entering
-  // 'failed' changes these deps and the toast fires once per failure.
+  const prevCurrentStatusRef = useRef(currentStatus);
   useEffect(() => {
-    if (currentStatus !== 'failed' && forecastStatus !== 'failed') return;
+    const prevStatus = prevCurrentStatusRef.current;
+    prevCurrentStatusRef.current = currentStatus;
 
-    toaster.error({
-      title: 'Error Updating Weather.',
-      description: currentError ?? forecastError,
-      duration: 5000,
-    });
-  }, [currentStatus, forecastStatus, currentError, forecastError]);
+    if (prevStatus !== 'failed' && currentStatus === 'failed') {
+      toaster.error({
+        title: 'Error Updating Weather.',
+        description: currentError,
+        duration: 5000,
+      });
+    }
+  }, [currentStatus, currentError]);
+
+  const prevForecastStatusRef = useRef(forecastStatus);
+  useEffect(() => {
+    const prevStatus = prevForecastStatusRef.current;
+    prevForecastStatusRef.current = forecastStatus;
+
+    if (prevStatus !== 'failed' && forecastStatus === 'failed') {
+      toaster.error({
+        title: 'Error Updating Weather.',
+        description: forecastError,
+        duration: 5000,
+      });
+    }
+  }, [forecastStatus, forecastError]);
 
   const updateWeather = () => {
     Promise.all([
