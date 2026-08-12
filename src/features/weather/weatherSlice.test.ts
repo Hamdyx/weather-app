@@ -105,7 +105,7 @@ describe('weatherSlice — fulfilled shape', () => {
     const state = reduceAll(currentPending(), fulfilledCurrent());
 
     expect(state.main).toEqual(currentPayload.main);
-    expect(state.location).toEqual(currentPayload.sys);
+    expect(state.locationInfo).toEqual(currentPayload.sys);
     expect(state.wind).toEqual(currentPayload.wind);
     expect(state.visibility).toBe(10000);
     expect(state.clouds).toBe(12);

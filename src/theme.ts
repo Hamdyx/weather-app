@@ -26,7 +26,7 @@ const config = defineConfig({
         },
         surface: {
           translucent: {
-            value: { _light: '{colors.gray.100}', _dark: '#0b1d354d' },
+            value: { _light: '#f7fafc4d', _dark: '#0b1d354d' },
           },
         },
       },

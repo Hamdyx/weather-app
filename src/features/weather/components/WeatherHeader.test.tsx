@@ -21,7 +21,7 @@ const failedState: RootState = {
     clouds: 0,
     hourly: [],
     timezoneOffsetSeconds: null,
-    location: null,
+    locationInfo: null,
     currentStatus: 'failed',
     currentError: 'Request failed with status 401',
     currentRequestId: null,

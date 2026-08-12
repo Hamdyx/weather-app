@@ -11,6 +11,8 @@ import {
 } from '../weatherSlice';
 import HourlyItem from './HourlyItem';
 
+const SKELETON_HEIGHT = '101px';
+
 function HourlySlider() {
   const hourlySlots = useAppSelector(selectHourlySlots);
   const forecastStatus = useAppSelector(selectForecastStatus);
@@ -26,14 +28,9 @@ function HourlySlider() {
   });
 
   return (
-    <Skeleton height="101px" loading={loading}>
+    <Skeleton height={SKELETON_HEIGHT} loading={loading}>
       <Box layerStyle="hourly">
-        <HStack
-          gap="8px"
-          justifyContent="center"
-          className="hourly-slider"
-          p={1}
-        >
+        <HStack gap="8px" justifyContent="center" p={1}>
           {failed ? (
             <Text>Forecast unavailable — try refresh</Text>
           ) : (

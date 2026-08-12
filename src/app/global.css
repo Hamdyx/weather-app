@@ -1,11 +1,7 @@
 .main-content {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  flex: 1;
-}
-
-.main-content:nth-child(1) {
+  min-height: 100dvh;
   flex: 1;
 }
 
