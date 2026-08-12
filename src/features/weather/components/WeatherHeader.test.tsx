@@ -24,8 +24,10 @@ const failedState: RootState = {
     location: null,
     currentStatus: 'failed',
     currentError: 'Request failed with status 401',
+    currentRequestId: null,
     forecastStatus: 'failed',
     forecastError: 'Request failed with status 401',
+    forecastRequestId: null,
   },
 };
 
