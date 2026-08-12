@@ -48,16 +48,78 @@ function buildUrl(endpoint: string, coords: Coordinates, apiKey: string) {
   return `${endpoint}?${params.toString()}`;
 }
 
-async function requestJson<T>(url: string, signal?: AbortSignal): Promise<T> {
+function isCurrentWeatherResponse(
+  data: unknown,
+): data is CurrentWeatherResponse {
+  if (!data || typeof data !== 'object') return false;
+  const { main, weather, sys, timezone } = data as Record<string, unknown>;
+
+  return (
+    !!main &&
+    typeof main === 'object' &&
+    typeof (main as Record<string, unknown>).temp === 'number' &&
+    Array.isArray(weather) &&
+    !!sys &&
+    typeof sys === 'object' &&
+    typeof timezone === 'number'
+  );
+}
+
+function isForecastResponse(data: unknown): data is ForecastResponse {
+  if (!data || typeof data !== 'object') return false;
+  const { list, city } = data as Record<string, unknown>;
+
+  return (
+    Array.isArray(list) &&
+    !!city &&
+    typeof city === 'object' &&
+    typeof (city as Record<string, unknown>).timezone === 'number'
+  );
+}
+
+/**
+ * Parses an error response body for OpenWeatherMap's `{ cod, message }`
+ * shape. Returns null on any parse failure so the caller can fall back to
+ * the plain status message instead of masking it.
+ */
+async function readErrorMessage(response: Response): Promise<string | null> {
+  try {
+    const body: unknown = await response.json();
+    if (
+      body &&
+      typeof body === 'object' &&
+      typeof (body as Record<string, unknown>).message === 'string'
+    ) {
+      return (body as { message: string }).message;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+async function requestJson<T>(
+  url: string,
+  validate: (data: unknown) => data is T,
+  signal?: AbortSignal,
+): Promise<T> {
   const response = await fetch(url, { signal });
 
   if (!response.ok) {
+    const bodyMessage = await readErrorMessage(response);
     throw new Error(
-      `Weather request failed with status ${response.status} ${response.statusText}`.trim(),
+      bodyMessage
+        ? `Weather request failed (${response.status}): ${bodyMessage}`
+        : `Weather request failed with status ${response.status} ${response.statusText}`.trim(),
     );
   }
 
-  return (await response.json()) as T;
+  const data: unknown = await response.json();
+  if (!validate(data)) {
+    throw new Error('Unexpected response shape from weather API');
+  }
+
+  return data;
 }
 
 export function fetchCurrentWeather(
@@ -66,8 +128,9 @@ export function fetchCurrentWeather(
 ): Promise<CurrentWeatherResponse> {
   const { weatherEndpoint, apiKey } = getApiConfig();
 
-  return requestJson<CurrentWeatherResponse>(
+  return requestJson(
     buildUrl(weatherEndpoint, coords, apiKey),
+    isCurrentWeatherResponse,
     signal,
   );
 }
@@ -78,8 +141,9 @@ export function fetchForecastData(
 ): Promise<ForecastResponse> {
   const { forecastEndpoint, apiKey } = getApiConfig();
 
-  return requestJson<ForecastResponse>(
+  return requestJson(
     buildUrl(forecastEndpoint, coords, apiKey),
+    isForecastResponse,
     signal,
   );
 }

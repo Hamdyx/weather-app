@@ -16,7 +16,7 @@ const failedState: RootState = {
     activeLocation: { lat: 30.0443879, lon: 31.2357257, name: 'Cairo, EG' },
     main: null,
     weather: null,
-    visibility: 0,
+    visibility: null,
     wind: null,
     clouds: 0,
     hourly: [],
