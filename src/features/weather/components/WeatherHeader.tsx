@@ -30,8 +30,8 @@ function WeatherHeader() {
   const visibility = useAppSelector((state) => state.weather.visibility);
   const wind = useAppSelector((state) => state.weather.wind);
   const clouds = useAppSelector((state) => state.weather.clouds);
-  const locationName = useAppSelector(
-    (state) => state.weather.activeLocation.name,
+  const activeLocation = useAppSelector(
+    (state) => state.weather.activeLocation,
   );
   const currentStatus = useAppSelector((state) => state.weather.currentStatus);
   const currentError = useAppSelector((state) => state.weather.currentError);
@@ -99,19 +99,21 @@ function WeatherHeader() {
   }, [forecastStatus, forecastError]);
 
   const updateWeather = () => {
-    Promise.all([
-      dispatch(fetchActiveWeather()).unwrap(),
-      dispatch(fetchForecast()).unwrap(),
-    ])
-      .then(() => {
+    const { lat, lon } = activeLocation;
+
+    // Failures are surfaced by the status effects above; only an
+    // all-fulfilled refresh earns a success toast.
+    void Promise.allSettled([
+      dispatch(fetchActiveWeather({ lat, lon })).unwrap(),
+      dispatch(fetchForecast({ lat, lon })).unwrap(),
+    ]).then((results) => {
+      if (results.every((result) => result.status === 'fulfilled')) {
         toaster.success({
           title: 'Weather Updated.',
           duration: 3000,
         });
-      })
-      .catch(() => {
-        // Failures are surfaced by the status effect above.
-      });
+      }
+    });
   };
 
   return (
@@ -119,10 +121,11 @@ function WeatherHeader() {
       <VStack gap="1rem">
         <HStack gap={4}>
           <Heading as="h1" size="lg">
-            {locationName}
+            {activeLocation.name}
           </Heading>
           <Button
             onClick={updateWeather}
+            disabled={refreshing}
             variant="plain"
             size="sm"
             aria-label="Refresh weather"
