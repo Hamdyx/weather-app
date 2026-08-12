@@ -29,8 +29,8 @@ function DayItem({ item, utcOffsetSeconds }: Props) {
             src={icon}
             alt={weather?.[0]?.description ?? ''}
             margin={0}
-            width={48}
-            height={48}
+            width="48px"
+            height="48px"
             htmlWidth={48}
             htmlHeight={48}
             loading="lazy"
