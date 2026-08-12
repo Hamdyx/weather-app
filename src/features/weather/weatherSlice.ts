@@ -21,7 +21,7 @@ import { fetchCurrentWeather, fetchForecastData } from './weatherApi';
 type RequestStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
 
 type SliceState = {
-  activeLocation: { lat: number; lon: number; name: string };
+  activeLocation: Coordinates & { name: string };
   main: MainWeather | null;
   weather: WeatherCondition[] | null;
   visibility: number | null;
@@ -29,7 +29,7 @@ type SliceState = {
   clouds?: number;
   hourly: ForecastWeather[];
   timezoneOffsetSeconds: number | null;
-  location: LocationInfo | null;
+  locationInfo: LocationInfo | null;
   currentStatus: RequestStatus;
   currentError: string | undefined;
   currentRequestId: string | null;
@@ -38,8 +38,15 @@ type SliceState = {
   forecastRequestId: string | null;
 };
 
+// Fallback active location shown before the user picks one (location search is planned, see src/app/locations).
+const DEFAULT_LOCATION: SliceState['activeLocation'] = {
+  lat: 30.0443879,
+  lon: 31.2357257,
+  name: 'Cairo, EG',
+};
+
 const initialState: SliceState = {
-  activeLocation: { lat: 30.0443879, lon: 31.2357257, name: 'Cairo, EG' },
+  activeLocation: DEFAULT_LOCATION,
   main: null,
   weather: null,
   visibility: null,
@@ -47,7 +54,7 @@ const initialState: SliceState = {
   clouds: 0,
   hourly: [],
   timezoneOffsetSeconds: null,
-  location: null,
+  locationInfo: null,
   currentStatus: 'idle',
   currentError: undefined,
   currentRequestId: null,
@@ -132,7 +139,7 @@ export const weatherSlice = createSlice({
         state.currentError = undefined;
         state.main = main;
         state.weather = weather;
-        state.location = location;
+        state.locationInfo = location;
         state.visibility = visibility;
         state.wind = wind;
         state.clouds = clouds;
