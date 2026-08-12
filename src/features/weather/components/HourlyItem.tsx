@@ -27,6 +27,9 @@ function HourlyItem({ data, utcOffsetSeconds }: Props) {
         alt={weather?.[0]?.description ?? ''}
         width={50}
         height={50}
+        htmlWidth={50}
+        htmlHeight={50}
+        loading="lazy"
         className="hourly-icon"
       />
       <Text className="hourly-data" mt="-.5rem">{`${Math.round(
