@@ -1,7 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '@/store';
 import type {
-  DailyForecastItem,
   ForecastWeather,
   LocationInfo,
   MainWeather,
@@ -9,8 +8,13 @@ import type {
   Wind,
 } from './types';
 
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  createAsyncThunk,
+  createSelector,
+} from '@reduxjs/toolkit';
 
+import { groupForecastByCityDay } from './forecast';
 import { fetchCurrentWeather, fetchForecastData } from './weatherApi';
 
 type RequestStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -23,7 +27,7 @@ type SliceState = {
   wind: Wind | null;
   clouds?: number;
   hourly: ForecastWeather[];
-  daily: DailyForecastItem[];
+  timezoneOffsetSeconds: number | null;
   location: LocationInfo | null;
   currentStatus: RequestStatus;
   currentError: string | undefined;
@@ -39,7 +43,7 @@ const initialState: SliceState = {
   wind: null,
   clouds: 0,
   hourly: [],
-  daily: [],
+  timezoneOffsetSeconds: null,
   location: null,
   currentStatus: 'idle',
   currentError: undefined,
@@ -55,6 +59,7 @@ export const fetchActiveWeather = createAsyncThunk<
     visibility: number;
     wind: Wind;
     clouds?: number;
+    timezone: number;
   },
   void,
   {
@@ -62,7 +67,7 @@ export const fetchActiveWeather = createAsyncThunk<
   }
 >('weather/fetchActiveWeather', async (_, thunkapi) => {
   const { lat, lon } = thunkapi.getState().weather.activeLocation;
-  const { main, weather, sys, visibility, wind, clouds } =
+  const { main, weather, sys, visibility, wind, clouds, timezone } =
     await fetchCurrentWeather({ lat, lon }, thunkapi.signal);
 
   return {
@@ -72,13 +77,14 @@ export const fetchActiveWeather = createAsyncThunk<
     visibility,
     wind,
     clouds: clouds?.all,
+    timezone,
   };
 });
 
 export const fetchForecast = createAsyncThunk<
   {
     list: ForecastWeather[];
-    daily: DailyForecastItem[];
+    timezone: number;
   },
   void,
   {
@@ -86,44 +92,9 @@ export const fetchForecast = createAsyncThunk<
   }
 >('weather/fetchForecast', async (_, thunkapi) => {
   const { lat, lon } = thunkapi.getState().weather.activeLocation;
-  const { list } = await fetchForecastData({ lat, lon }, thunkapi.signal);
+  const { list, city } = await fetchForecastData({ lat, lon }, thunkapi.signal);
 
-  // Group forecast items by day and compute min/max temps
-  const grouped = new Map<
-    string,
-    { items: ForecastWeather[]; min: number; max: number }
-  >();
-
-  for (const item of list) {
-    const day = item.dt_txt.split(' ')[0];
-    const entry = grouped.get(day);
-    if (entry) {
-      entry.items.push(item);
-      entry.min = Math.min(entry.min, item.main.temp_min);
-      entry.max = Math.max(entry.max, item.main.temp_max);
-    } else {
-      grouped.set(day, {
-        items: [item],
-        min: item.main.temp_min,
-        max: item.main.temp_max,
-      });
-    }
-  }
-
-  const daily: DailyForecastItem[] = Array.from(grouped.values()).map(
-    ({ items, min, max }) => {
-      // Pick the midday entry (closest to 12:00) as representative weather
-      const midday =
-        items.find((i) => i.dt_txt.includes('12:00:00')) ?? items[0];
-      return {
-        dt: midday.dt,
-        weather: midday.weather,
-        temp: { min, max },
-      };
-    },
-  );
-
-  return { list, daily };
+  return { list, timezone: city.timezone };
 });
 
 export const weatherSlice = createSlice({
@@ -148,7 +119,7 @@ export const weatherSlice = createSlice({
         state.currentError = action.error.message;
       })
       .addCase(fetchActiveWeather.fulfilled, (state, action) => {
-        const { main, weather, location, visibility, wind, clouds } =
+        const { main, weather, location, visibility, wind, clouds, timezone } =
           action.payload;
         state.currentStatus = 'succeeded';
         state.currentError = undefined;
@@ -158,6 +129,7 @@ export const weatherSlice = createSlice({
         state.visibility = visibility;
         state.wind = wind;
         state.clouds = clouds;
+        state.timezoneOffsetSeconds = timezone;
       })
       .addCase(fetchForecast.pending, (state) => {
         state.forecastStatus = 'loading';
@@ -168,15 +140,35 @@ export const weatherSlice = createSlice({
         state.forecastError = action.error.message;
       })
       .addCase(fetchForecast.fulfilled, (state, action) => {
-        const { list, daily } = action.payload;
+        const { list, timezone } = action.payload;
         state.forecastStatus = 'succeeded';
         state.forecastError = undefined;
         state.hourly = list;
-        state.daily = daily;
+        state.timezoneOffsetSeconds = timezone;
       });
   },
 });
 
 export const { locationUpdated } = weatherSlice.actions;
+
+export const HOURLY_SLOT_COUNT = 5;
+
+export const selectHourly = (state: RootState) => state.weather.hourly;
+
+export const selectTimezoneOffsetSeconds = (state: RootState) =>
+  state.weather.timezoneOffsetSeconds;
+
+export const selectForecastStatus = (state: RootState) =>
+  state.weather.forecastStatus;
+
+export const selectDailyForecast = createSelector(
+  [selectHourly, selectTimezoneOffsetSeconds],
+  (list, timezoneOffsetSeconds) =>
+    groupForecastByCityDay(list, timezoneOffsetSeconds ?? 0),
+);
+
+export const selectHourlySlots = createSelector([selectHourly], (list) =>
+  list.slice(0, HOURLY_SLOT_COUNT),
+);
 
 export default weatherSlice.reducer;

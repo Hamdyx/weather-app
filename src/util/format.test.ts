@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   dayjsInCity,
@@ -6,37 +6,7 @@ import {
   formatDayLabel,
   formatMpsToKmh,
   formatMtoKm,
-  formatUnixDay,
 } from './format';
-
-describe('formatUnixDay', () => {
-  beforeEach(() => {
-    // Monday, 2024-01-15, local time
-    vi.setSystemTime(new Date(2024, 0, 15, 12, 0, 0));
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  it('returns "Today" for a timestamp on the current day', () => {
-    const unixDate = new Date(2024, 0, 15, 0, 0, 0).getTime() / 1000;
-
-    expect(formatUnixDay(unixDate)).toBe('Today');
-  });
-
-  it('returns "Tomorrow" for a timestamp on the next day', () => {
-    const unixDate = new Date(2024, 0, 16, 0, 0, 0).getTime() / 1000;
-
-    expect(formatUnixDay(unixDate)).toBe('Tomorrow');
-  });
-
-  it('returns "ddd DD/MM" for any other day', () => {
-    const unixDate = new Date(2024, 0, 20, 0, 0, 0).getTime() / 1000;
-
-    expect(formatUnixDay(unixDate)).toBe('Sat 20/01');
-  });
-});
 
 describe('dayjsInCity', () => {
   it('resolves the city-local date/time from an absolute timestamp and offset', () => {

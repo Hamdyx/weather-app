@@ -56,16 +56,6 @@ export function formatCityTime(
   return dayjsInCity(unixSeconds, utcOffsetSeconds).format(template);
 }
 
-export function formatUnixDay(unixDate: number) {
-  const date = dayjs.unix(unixDate);
-  const today = dayjs().startOf('day');
-
-  if (date.isSame(today, 'day')) return 'Today';
-  if (date.isSame(today.add(1, 'day'), 'day')) return 'Tomorrow';
-
-  return `${date.format('ddd')} ${date.format('DD/MM')}`;
-}
-
 export function formatMtoKm(meters: number) {
   const kilometers = meters / METERS_PER_KILOMETER;
 
